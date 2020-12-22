@@ -1,0 +1,117 @@
+#아이폰 개발 공부하기
+2020년 12월 22일
+
+#주제 - 스위프트 기본 문법 #야곰
+
+5강 컬렉션 타입 (Array, Dictionary, Set)
+
+#요약 정리
+- Array : 순서가 있는 리스트 컬렉션
+- Dictionary : 키와 값의 쌍으로 이루어진 컬렉션
+- Set : 순서가 없고, 멤버가 유일한 컬렉션
+
+
+/*시작*/
+
+//MARK: - Array
+
+// 빈 Int Array 생성
+var integers: Array<Int> = Array<Int>()
+
+//요소 추가 시
+intergers.append(1) 
+intergers.append(100) //-> 값 : [1, 100]
+
+//이 녀석이 이런 멤버를 갖고 있는가를 확인할 때
+intergers.contains(100)  //-> 값 : true
+intergers.contains(99)  //-> 값 : false
+
+//인덱스 값을 없앨 때
+intergers.remove(at: 0)  //-> 값 : 1  ** 요소 카운트 시 0,1,2,3 순으로 올라가기 때문에 0을 입력하면 첫번째 요소를 지운다
+intergers.removeLast()  //-> 값 : 100
+intergers.removeAll()  //-> 값 : []
+
+intergers.count  //-> 값 : 0
+
+
+// Array<Double>와 [Doble]는 동일한 표현이다
+// 빈 Double Array 생성
+var double: Array<Double> = [Double]()
+
+// 빈 String Array 생성
+var strings: [String] = [String]()
+
+// 빈 Character Array 생성
+// []는 새로운 빈 Array
+var character: [Character] = []
+
+// let을 사용하여 Array를 선언하면 불변 Array
+let immutableArray = [1, 2, 3]
+//* 리무브 등이 사용이 불가능해진다 *//
+
+
+
+//MARK: - Dictionary
+
+// Key가 String 타입이고 Value가 Any인 빈 Dictionary 생성
+var anyDictionary: Dictionary<String, Any> = [String: Any]()
+anyDictionary["someKey"] = "value"    //-> 값 : "value"
+anyDictionary["anotherKey"] = 100    //-> 값 : 100
+
+anyDictionary    //-> 값 : ["someKey": "value", "anotherKey": "100"]
+
+//* 키에 해당하는 값을 바꾸고 싶을 때 *//
+anyDictionary["someKey"] = "dictionary"    //-> 값 : "dictionary"
+anyDictionary    //-> 값 : ["someKey": "dictionary", "anotherKey": "100"]
+
+//* 키에 해당하는 값을 없애고 싶을 때 *//
+anyDictionary.removeValue(forKey: "anotherKey")    //-> 값 : 100
+
+//*someKet에 값을 없애고 싶을 때 *//
+anyDictionary["someKey"] = nil    //-> 값 : nil
+anyDictionary    //-> 값 : 없음
+
+let emptyDictionary: [String: String] = [:]  //* [:] 는 빈 딕셔너리라는 것을 의미 *//
+let initalizedDictionary: [String: String] = ["name": "dongjae", "gender": "male"]    //-> 값 : ["name": "dongjae", "gender": "male"]
+
+//* let으로 딕셔너리의 값을 선언해주면 다른 값을 넣을 수 없다
+
+
+//MARK: - Set
+var integerSet: Set<Int> = Set<Int>()
+intergerSet.insert(1)    //-> 값 : (inserted true, memberAfterInsert 1)
+intergerSet.insert(100)    //-> 값 : (inserted true, memberAfterInsert 100)
+intergerSet.insert(99)    //-> 값 : (inserted true, memberAfterInsert 99)
+intergerSet.insert(99)    //-> 값 : (inserted false, memberAfterInsert 99)
+intergerSet.insert(99)    //-> 값 : (inserted false, memberAfterInsert 99)
+//* 인서트 시 처음 인서트 하는 값은 성공하지만 중복으로 인서트하는 값은 실패한다 *//
+
+//Set에 값을 확인해보면
+intergerSet    //-> 값 : {100, 99, 1}
+
+//Set에 값이 있는지 확인하기
+intergerSet.contains(1)    //-> 값 : true
+intergerSet.contains(2)    //-> 값 : false
+
+//Set의 값을 삭제하기
+intergerSet.remove(100) //100이 삭제됨
+intergerSet.removeFirst() //99가 삭제됨 (이유는 100이 삭제되어서 99가 첫번째 요소가 되었기 때문)
+
+//Set 요소의 수를 세어보기
+intergerSet.count     //-> 값 : 1
+
+//응용해보기
+let setA: Set<Int> = [1, 2, 3, 4, 5]
+let setB: Set<Int> = [3, 4, 5, 6, 7]
+
+//SetA 와 SetB의 합집합 구하기
+let union: Set<Int> = setA.union(setB)     //-> 값 : {2, 4, 5, 6, 7, 3, 1}
+
+//합집합 값이 정렬되어 있지 않기 때문에 보기 어려워 이 값을 정렬해주기
+let sortedUnion: [Int] = union.sorted()     //-> 값 : {1, 2, 3, 4, 5, 6, 7}
+
+//SetA 와 SetB의 교집합 구하기
+let intersection: Set<Int> = setA.intersection(setB)     //-> 값 : {5, 3, 4}
+
+SetA 와 SetB의 차집합 구하기
+let subtracting: Set<Int> = setA.subtracting(setB)     //-> 값 : {2, 1}

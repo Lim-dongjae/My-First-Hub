@@ -1,0 +1,27 @@
+#아이폰 개발 공부하기
+2020년 12월 22일
+
+#주제 - 스위프트 기본 문법 #야곰
+
+4강 any, anyObject, nill
+
+#요약 정리
+- any : swift의 모든 타입을 지칭하는 키워드
+- anyObject - 모든 클래스 타입을 지칭하는 프로토콜
+- nil - 없음을 의미하는 키워드
+
+
+
+//MARk: - any
+var someAny: Any = 100
+someAny = "어떤 타입도 수용 가능하다"
+someAny = 123.12
+
+//MARK: - anyObject
+class SomeClass {}
+
+var someAnyObject: AnyObject = SomeClass()
+
+//MARk: - nil
+
+

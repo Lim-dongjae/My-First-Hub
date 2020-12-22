@@ -1,0 +1,73 @@
+#아이폰 개발 공부하기
+2020년 12월 22일
+
+#주제 - 스위프트 기본 문법 #야곰
+
+5강 함수 기본
+
+#요약 정리
+- 함수는 func로 선언한다
+
+
+//MARK: -함수의 선언
+
+//MARK: 함수선언의 기본형태
+//func 함수이름(매개변수1이름: 매개변수1타입, 개매변수2이름: 매개변수2타입 ...) -> 반환타입 {
+//    함수 구현부
+//    return 반환값
+//}
+
+func sum(a: Int, b: Int) -> Int {
+    retrun a + b
+}
+
+
+//MARK: 반환 값이 없는 함수
+//func 함수이름(매개변수1이름: 매개변수1타입, 개매변수2이름: 매개변수2타입 ...) -> Viod {
+//    함수 구현부
+//    return 반환값
+//}
+
+func printMyName(name: String) -> Void {
+    print(name)
+}
+
+//Void는 생략이 가능하다
+func printYourName(name: String) {
+    print(name)
+}
+
+
+//MARK: 매개변수가 없는 함수
+//func 함수이름() -> 반환타입 {
+//    함수 구현부
+//    return 반환값
+//}
+
+func maximumIntergerValue() -> Int {
+    return Int.max
+}
+
+
+//MARK: 매개변수와 반환값이 없는 함수
+//func 함수이름() -> Void {
+//    함수 구현부
+//    return
+//}
+
+func hello() -> Void { print("hello")}
+
+//Void는 생략이 가능하다
+func bye() { print("bye")}
+
+
+//MARK: - 함수의 호출
+sum(a: 3, b: 5) // 8
+printMyName(name: "dongjae") // dongjae
+printYourName(name: "dongjae") // dongjae
+maximumIntergerValue() // Int의 최댓값
+hello() // hello
+bye() // bye
+
+
+
