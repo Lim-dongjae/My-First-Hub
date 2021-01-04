@@ -1,0 +1,91 @@
+#아이폰 개발 공부하기
+2021년 01월 04일
+
+#주제 - 스위프트 기본 문법 #야곰
+
+10강 옵셔널
+
+#요약 정리
+optional - 값이 "있을 수도 있고 없을 수도 있음"
+
+optional이 필요한 이유는 nil의 가능성을 명시적으로 표현하기 위함
+    - nil 가능성을 문서화 하지 않아도 코드만으로 충분히 표현 가능
+    - 문서/주석 작성 시간을 절약
+    - 전달받은 값이 optional이 아니라면 nil 체크를 하지 않더라도 안심하고 사용
+    - 효율적인 코딩
+    - 예외 사황을 최소화하는 안전한 코딩
+
+optional을 사용할 땐 "?" 와 "!" 를 사용할 수 있다.
+
+// 암시적 추출 optional인
+"!" optional은 기존의 변수처럼 사용이 가능하다
+// 예시
+optionalValue = optionalValue + 1 // 가능
+
+// 일반적 optional인
+"?" optional은 기존의 변수처럼 사용이 불가능하다
+// 예시
+optionalValue = optionalValue + 1 // 불가능
+
+
+
+// someOptionalParam은 nil일 수 있다
+func someFunction(someOptionalParam: Int?) {
+    // ...
+}
+
+// someParam은 nil일 수 없다
+func someFunction(someParam: Int?) {
+    // ...
+}
+
+// optional을 사용할 때
+let optionalValue: Optional<Int> = nil
+let optionalValue: Int? = nil
+// 위와 같이 optional을 표현할 수 있다. *?는 띄워쓰면 안된다.
+
+
+
+//optional을 사용할 땐 "?" 와 "!" 를 사용할 수 있다.
+// 먼저 "!"의 optional
+
+//암시적 추출 옵셔널
+var optionalValue: Int! = 100
+
+switch optionalValue {
+case .none:
+    print("This Optional variable is nil")
+case .some(let value):
+    print("Value is \(value)")
+}
+
+// 기존 변수처럼 사용 가능
+optionalValue = optionalValue + 1
+
+// nil 할당 가능
+optionalValue = nil
+
+// 잘못된 접근으로 인한 런타임 오류 발생
+optionalValue = optionalValue + 1
+// 여기서 오류가 난 이유는 위에서 optionalValue 값이 nil이라고 넣어줬는데
+// optional 변수에 접근하려해서 오류가 난 것이다.
+
+
+
+//optional을 사용할 땐 "?" 와 "!" 를 사용할 수 있다.
+// 그리고 "?"의 optional
+
+var optionalValue: Int? = 100
+
+switch optionalValue {
+case .none:
+    print("This Optional variable is nil")
+case .some(let value)
+    print("Value is \(value)")
+}
+
+// nul 할당 가능
+// 기존 변수처럼 사용이 불가 - optional 과 일반 값은 다른 타입이므로 연산 불가
+// Int에 ? optional을 사용해도 Int 타입 아닌 다른 타입으로 취급
+optionalValue = optionalValue +1 // 오류가 발생한다.
+

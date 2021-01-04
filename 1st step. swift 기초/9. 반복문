@@ -1,0 +1,49 @@
+#아이폰 개발 공부하기
+2021년 01월 04일
+
+#주제 - 스위프트 기본 문법 #야곰
+
+9강 반복문
+
+#요약 정리
+
+
+var intergers = [1, 2, 3]
+let people = ["darong": 10, "yomi": 15, "bbori": 12]
+
+//MARK: - for-in
+
+//for item in items {
+//    code
+//}
+
+for interger in intergers {
+    print(interger)
+}
+
+// Dictionary의 item은 Key와 value로 구성된 튜플 타입이다
+for (name, age") in people {
+    print("\(name): \(age)")
+}
+
+
+//MARK: -while
+
+//while condition {
+//    code
+//}
+
+while intergers.count > 1 {
+    intergers.removeLast()
+}
+
+
+//MARK: - repeat-while
+
+//repeat {
+//    code
+//}
+
+repeat {
+    intergers.removeLast()
+} while intergers.count > 0
