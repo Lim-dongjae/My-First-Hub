@@ -1,0 +1,102 @@
+#아이폰 개발 공부하기
+2021년 01월 05일
+
+#주제 - 스위프트 기본 문법 #야곰
+
+13강 클래스(class)
+
+#구조체와 클래스의 유사하나
+#구조체는 값 타입인 반면에
+#클래스는 참조 타입이다
+#클래스는 다중 상속이 되지 않는다
+
+
+
+//MARK: - 정의
+
+class 이름 {
+    /* 구현부 */
+}
+
+//MARK: 프로퍼티 및 메서드
+
+class Sample {
+    var mutableProperty: Int = 100 // 가변 프로퍼티
+    let immutableProperty: Int = 100 // 불변 프로퍼티
+
+    static var typeProperty: Int = 100 // 타입 프로퍼티
+
+    // 인스턴스 메서드
+    func instanceMethod() {
+        print("instance method")
+    }
+
+    // 타입 메서드
+    // 재정의 불가 타입 메서드 - static
+    static func typeMethod() {
+        print("type method - static")
+    }
+
+    // 재정의 가능 타입 메서드 - class
+    class func classMethod() {
+        print("type method - class)
+    }
+}
+
+
+//MARK: 클래스 사용
+// 클래스는 구조체와 다르게 뮤터블과 임뮤터블 또 렛과 바를 사용한 이스턴스 모두가 
+// 안에 뮤터블 프로퍼티를 변경해줄 수 있다
+///////////////////////////////////////////////
+// **이게 무슨말인지 모르겠다**
+///////////////////////////////////////////////
+
+var mutableReference: Sample = Sample()
+
+mutableReference.mutableProperty = 200
+//mutableReference.immutableProperty = 200
+
+let immutableReference: Sample = Sample()
+
+immutableReference.mutableProperty = 200
+//immutableReference.immutableProperty = 200
+
+//immutableReference = mutableReference
+
+
+// 타입 프로퍼티 및 메서드
+Sample.typeProperty = 300
+Sample.typeMethod() // type method
+
+//mutableReference.typeProperty = 400
+//mutableReference.typeMethod()
+
+
+//MARK: - 학생 클래스
+
+class Student {
+    var name: String = "unknown"
+    car `class`: String = "Swift"
+
+    class func selfIntroduce() {
+        print("학생타입입니다")
+    }
+
+    func selfIntroduce() {
+        print("저는 \(self.class)반 \(name)입니다")
+    }
+}
+
+Student.selfIntroduce() // 학생타입입니다
+
+var dongjae: Student = Student()
+dongjae.name = "dongjae"
+dongjae.class = "스위프트"
+dongjae.selfIntroduce()  // 저는 스위프트반 dongjae입니다
+
+let seonghui: Student = Student()
+seonghui.name = "seonghui"
+seonghui.selfIntroduce() // 저는 Swift반 seonghui입니다
+
+// 구조체에서는 위와같이 let으로 선언하면 오류가 발생했지만
+// 클래스에서는 위와같이 가변 인스턴스를 let으로 선언했음에도 불구하고 변경할 수 있다
