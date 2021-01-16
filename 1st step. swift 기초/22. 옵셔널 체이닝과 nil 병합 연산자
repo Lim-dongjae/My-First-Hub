@@ -97,3 +97,4 @@ print(guardJob) // 경비원
 guardJob = dongjae?.home?.guard?.job = nil
 
 guardJob = dongjae?.home?.guard?.job ?? "슈퍼맨"
+print(guardJob) // 슈퍼맨
