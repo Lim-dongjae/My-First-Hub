@@ -4,3 +4,163 @@
 #주제 - 스위프트 기본 문법 #야곰
 
 23강 타입 캐스팅
+
+/* 타입캐스팅 */
+
+// 스위프트의 타입캐스팅은
+// 인스턴스의 타입을 확인하는 용도
+// 또는 클래스의 인스턴스를
+// 부모 혹은 자식 클래스의 타입으로 사용할 수 있는지
+// 확인하는 용도로 사용한다
+// is, as를 사용한다
+
+import Swift
+
+// 타입 캐스팅을 위한 클래스 정의
+class Person {
+    var name: String = ""
+    func breath() {
+        print("숨을 쉽니다")
+    }
+}
+
+class Student: Person {
+    car school: String = ""
+    func goToSchool() {
+        print("등교를 합니다")
+    }
+}
+
+
+class UniversityStudent: Student {
+    var major: String = ""
+    func goToMT() {
+        print("MT를 갑니다")
+    }
+}
+
+
+var dongjae: Person = Person()
+var seonghui: Student = Student()
+var bbori: UniversityStudent = UniversityStudent()
+
+
+//MARK: - 타입 확인
+// is를 사용하여 타입을 확인할 수 있다
+
+var result: Bool
+
+result = dongjae is Person // true
+result = dongjae is Student // false
+result = dongjae is UniversityStudent // false
+
+result = seonghui is Person // true
+result = seonghui is Student // true
+result = seonghui is UniversityStudent // false
+
+result = bbori is Person // true
+result = bbori is Student // true
+result = bbori is UniversityStudent // true
+
+
+if dongjae is UniversityStudent {
+    print("dongjae는 대학생입니다")
+} else if dongjae is Student {
+    print("dongjae는 학생입니다")
+} else if dongjae is Person {
+    print("dongjae는 사람입니다")
+} // dongjae는 사람입니다
+
+
+switch bbori {
+    case is Person:
+        print("bbori는 사람입니다")
+    case is Student:
+        print("bbori는 학생입니다")
+    case is UniversityStudent:
+        print("bbori는 대학생입니다")
+    default:
+        print("bbori는 사람도, 학생도, 대학생도 아닙니다")
+} // bbori는 사람입니다
+
+switch bbori {
+    case is UniversityStudent:
+        print("bbori는 대학생입니다")
+    case is Student:
+        print("bbori는 학생입니다")
+    case is Person:
+        print("bbori는 사람입니다")
+    default:
+        print("bbori는 사람도, 학생도, 대학생도 아닙니다")
+} // bbori는 대학생입니다
+
+//MARK: - 업 캐스팅
+// as를 사용하여 부모클래스의 인스턴스로 사용할 수 있도록
+// 컴파일러에게 타입정보를 전환해준다
+// Any 혹은 AnyObject로도 타입정보를 변환할 수 있다
+// 암시적으로 처리되므로 생략해도 무방하다
+
+var mike: Person = UniversityStudent() as Person // 대학생도 사람이기 때문에 Person에 UniversityStudent 타입이 들어올 수 있다
+var jenny: Student = Student()
+// var jina: UniversityStudent = Person() as UniversityStudent // 하지만 사람은 대학생일수도 있고 아닐수도 있기 때문에 이렇게 작성할 수는 없다
+var jina: Any = Person() as Any // <- 여기서 as Any는 생략할 수 있다
+
+
+//MARK: - 다운 캐스팅
+// as? 또는 as!를 사용하여
+// 자식 클래스의 인스턴스로 사용할 수 있도록
+// 컴파일러에게 인스턴스의 타입정보를 전환해준다
+
+//MARK: - 조건부 다운 캐스팅
+// as?
+
+var optionalCasted: Student?
+
+optionalCasted = mike as? UniversityStudent
+optionalCasted = jenny as? UniversityStudent // nil
+optionalCasted = jina as? UniversityStudent // nil
+optionalCasted = jina as? Student // nil
+// mike는 Person 타입이지만 UniversityStudent 인스턴스를 할당받았기 때문에
+// UniversityStudent로 캐스팅될 수 있다
+// 하지만 나머지 jenny, jina는 학생이거나 사람이었기 때문에
+// UniversityStudent를 캐스팅 받지 못한다
+
+
+//MARK: 강제 다운 캐스팅
+// as!
+
+var forcedCasted: Student
+
+optionalCasted = mike as! UniversityStudent
+//optionalCasted = jenny as? UniversityStudent // 런타임 오류
+//optionalCasted = jina as? UniversityStudent // 런타임 오류
+//optionalCasted = jina as? Student // 런타임 오류
+// 강제 다운 캐스팅은 너 이거해! 라는 의미이기 떄문에
+// 대학생인 mike에게 너 대학생해! 라고 해도 별문제가 없지만
+// 다른 친구들에게 너 대학생해! 라고 했을 땐 대학생이 될 수 없기 떄문에
+// 런타임 오류가 발생한다
+
+
+// 활용
+func doSomethingWithSwitch(someone: Person) {
+    switch someone {
+    case is UniversityStudent:
+        (someone as! UniversityStudent).goToMT()
+    case is Student:
+        (someone as! Student).goToSchool
+    case is Person:
+        (someone as! Person).breath()
+    }
+}
+
+doSomethingWithSwitch(someone: mike as Person)
+// MT를 갑니다
+
+doSomethingWithSwitch(someone: mike)
+// MT를 갑니다
+
+doSomethingWithSwitch(someone: jenny)
+// 등교를 합니다
+
+doSomethingWithSwitch(someone: dongjae)
+// 숨을 쉽니다
