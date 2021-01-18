@@ -1,0 +1,102 @@
+#아이폰 개발 공부하기
+2021년 01월 18일
+
+#주제 - 스위프트 기본 문법 #야곰
+
+24강 assert와 guard
+
+/*  assert아 guard */
+
+// 애플리케이션이 동작 도중에 생성하는 다양한 결과값을
+// 동적으로 확인하고 안전하게 처리할 수 있도록
+// 확인하고 빠르게 처리할 수 있다
+
+import Swift
+
+//MARK: - Assertion
+// assert(_:_:file:line:) 함수를 사용한다
+// assert 함수는 디버깅 모드에서만 동작한다
+// 배포하는 애플리케이션에서는 제외된다
+// 주로 디버깅 중 조건의 검증을 위하여 사용한다
+
+var someInt: Int = 0
+
+assert(someInt == 0. "someInt != 0")
+
+someInt = 1
+//assert(someInt == 0) // 동작 중지, 검증 실패 <- 검증 실패 시 표시될 경고문구를 입력하지 않았기 때문에 동작이 중지되도 아무런 문구 없이 그대로 작동이 중지된다
+
+//assert(someInt == 0, "someInt != 0") // 동작 중지, 검증 실패
+//assertion failed: someInt != 0: file guard_assert.swift, line 26 <- 위처럼 문구를 입력해 놓으면 검증 실패 시 이와 같이 경고 문구가 표시된다
+
+
+func functionWithAssert(age: Int?) {
+
+    asser(age != nil, "age == nil")
+
+    assert((age! >= 0) && (age! <= 130), "나이값 입력이 잘못되었습니다")
+    print("당신의 나이는 \(age!)세 입니다")
+}
+
+functionWithAssert(age: 50)
+//functionWithAssert(age: -1) // 동작 중지, 검증 실패
+//functionWithAssert(age: nil) // 동작 중지, 검증 실패
+
+
+//MARK: - Early Exit
+// guard를 사용하여 잘못된 값의 전달 시
+// 특정 실행구문을 빠르게 종료한다
+// 디버깅 모드 뿐만 아니라 어떤 조건에서도 동작한다
+// guard의 else 블럭 내부에는
+// 특정 코드블럭을 종료하는 지시어(return, break 등)가
+// 꼭 있어야 한다
+// 타입 캐스팅, 옵셔널과도 자주 사용된다
+// 그 외 단순 조건 판단 후 빠르게 종료할 때도 용이하다
+
+func functionWithGuard(age: Int?) {
+
+    guard let unwrappedAge = age,
+        unwrappedAge < 130,
+        unwrappedAge >= 0 else {
+        print("나이값 입력이 잘못되었습니다")
+        return
+    }
+
+    print("당신의 나이는 \(unwrappedAge)세 입니다")
+}
+
+var count = 1
+
+while true {
+    guard count < 3 else {
+        break
+    }
+    print(count)
+    count += 1
+}
+// 1
+// 2
+// count가 1일 때 count가 3보다 작다면 아래로 내려간다
+// print(count)를 하면 1이 표시되며
+// count += 1 // 이 말은 count는 count + 1 이다 라는 뜻이다
+// 따라서 count에 1이 더해져 2가 표시된다
+// 그리고 while 구문이기 떄문에 반복되어 다시 위로 올라가
+// 다시 시작되는데 count는 3이 되었기 떄문에 가드에 걸려서 내려가지 못하고
+// 코드가 종료된다
+
+
+func someFunction(info: [String: Any]) {
+    guard let name = info["name"] as? String else {
+        return
+    }
+
+    guard let age = info["age"] as? Int, age >= 0 else {
+        return
+    }
+
+    print("\(name): \(age)")
+}
+
+someFunction(info: ["name": "jenny", "age": "10"]) // 오류 발생 -> age는 Int타입인데 ""를 붙여 String 타입으로 작성하여 오류가 발생한다
+someFunction(info: ["name": "mike"]) // age가 없기 때문에 실행되지 않는다
+someFunction(info: ["name": "dongjae", "age": 10]) // dongjae: 10
