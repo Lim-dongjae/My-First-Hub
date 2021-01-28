@@ -1,0 +1,15 @@
+#아이폰 개발 시작하기
+2021년 01월 28일
+
+#주제 - UpDownGame 개발
+
+
+//MARK: - 스위프트 시작하기
+
+1. 디바이스 오리엔테이션 (Device Orientation) : 이 앱에서 허용할 디바이스의 방향
+- Portrait : 세로 방향 <- 체크 해제 시 앱은 가로로만 표시된다
+- Upside Down : 
+- Landscape Left : 왼쪽 가로
+- Landscape Right : 오른쪽 가로로만
+
+2. ToDo List : 앱 개발 시 해야할 목록을 작성하는 것
