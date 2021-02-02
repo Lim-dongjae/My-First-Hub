@@ -1,0 +1,22 @@
+#아이폰 개발 시작하기
+2021년 02월 02일
+
+#주제 - UpDownGame 개발
+
+2강 UI&Event - Challenge
+
+1st. Adding RESET Button
+- Implement IBAction function
+
+- Name : touchUpResetButton(_ sender: UIButton)
+- Body : prints string- "touch up reset button"
+
+- Add a button on the top-right side of the view
+- Set button title : RESET
+
+- Connect `Touch up inside` event of button to `touchUpResetButton` function
+
+정답:
+    @IBAction func touchUpResetButton(_ sender: UIButton) {
+        print("touch up reset button")
+    }
