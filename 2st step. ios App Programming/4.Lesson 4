@@ -1,0 +1,120 @@
+#아이폰 개발 시작하기
+2021년 02월 03일~08일
+
+#주제 - UpDownGame 개발 #야곰
+
+Lesson4
+
+#Topics - Comments
+한줄 주석 : //
+여러줄 주석 : /* 
+            ㅁㄴㅇㅁㄴㅇ
+           */
+
+
+- Doing Something : Functions
+함수란? 특정한 기능을 하는 모음, 조각이다
+함수를 만들어 줄 때엔
+함수를 의미하는 func 를 작성한 뒤 함수의 이름을 작성한다
+그리고 이름 뒤엔 소괄호를 만들고 그 안에는 매개변수를 작성한다
+func funcName(매개변수) {
+    함수 내용 작성
+}
+@IBAction은 인터페이스 빌디에서 연결할 액션을 뜻한다
+
+class 안에있는 함수들은 메서드(Method)라고 부른다
+
+
+- Challenge - Implementing Function
+1. Implement Function
+    - in ViewCountroller.swift file
+    - in ViewCountroller class
+    - Function name : reset
+    - parameters : No parameters
+    - Code in function
+    - print("reset")
+2. Call `reset` function in...
+    - viewDidLoad function
+    - touchUpResetButton  function
+
+답 : 
+    //함수 작성
+    func reset() {
+        print("reset!")
+    }
+
+    //함수 호출
+    reset()
+
+- Values : Variables
+- Declaring Variables
+- Challenge - Declaring Variables
+- Random numbers
+- Restarting the Game
+= Wrapping
+
+
+
+#Topics - Values : Variables
+
+변수와 상수
+변수와 상수는 모드 값을 저장할 수 있다
+
+변수는 값을 변경할 수 있고
+상수는 값을 변경할 수 없다.
+
+변수
+var randomValue: Int = 0
+
+상수
+let hitValue: Int = 0
+
+
+
+#Topics - Declaring Variables
+
+    var randomValue: Int = 0
+    var tryCount: Int = 0
+    @IBOutlet weak var slider: UISlider!
+    @IBOutlet weak var tyrCountLabel: UILabel!
+    @IBOutlet weak var sliderValueLabel: UILabel!
+    @IBOutlet weak var minimumValueLabel: UILabel!
+    @IBOutlet weak var maximumValueLabel: UILabel!
+
+만약 상수, 변수의 이름을 잘못 입력하여 수정해야하는 경우
+잘못 입력한 이름을 오른쪽 클릭하여 리펙터 -> 리네임 하여 수정해야한다
+
+
+#Topics - Random numbers
+
+#범위 연산자
+폐쇄 범위 연산자
+- A...B // A와 B를 모두 포함한 범위 연산자
+
+반폐쇄 범위연산자
+- A..<B // A와 B를 포함하지 않는 반폐쇄 범위 연산자
+
+단방향 범위 연산자
+- A... // A를 포함하는 단방향 범위 연산자
+- ...A // A를 포함하는 단방향 범위 연산자
+- ..<A // A를 포함하지 않는 단방향 번위 연산자
+
+randomValue = Int.random(in: 0...30) // 0~30를 포함하는 범위 연산자
+
+
+#Topics - Restarting the Game
+
+    func reset() {
+        print("reset!")
+        randomValue = Int.random(in: 0...30)
+        print(randomValue)
+        tryCount = 0
+        tryCountLabel.text = "0 / 5"
+        slider.minimumValue = 0
+        slider.maximumValue = 30
+        slider.value = 15
+        minimumValueLabel.text = "0"
+        maximumValueLabel.text = "30"
+        sliderValueLabel.text = "15"
+    }
+
