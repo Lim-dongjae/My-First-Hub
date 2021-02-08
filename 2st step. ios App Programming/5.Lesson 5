@@ -1,0 +1,142 @@
+#아이폰 개발 시작하기
+2021년 02월 08일
+
+#주제 - UpDownGame 개발 #야곰
+
+Lesson5
+
+#Topics - Changing value to another type
+    @IBAction func sliderValueChanged(_ sender: UISlider) {
+        print(sender.value)
+        let intergerValue: Int = Int(sender.value)
+        sliderValueLabel.text = String(intergerValue)
+    }
+    
+    @IBAction func touchUpHitButton(_ sender: UIButton) {
+        print(slider.value)
+        let hitValue: Int = Int(slider.value)
+        slider.value = Float(hitValue)
+    }
+
+
+#Topics - String Interpolation
+
+//tryCount = tryCount + 1
+//tryCountLabel.text = "\(tryCount) / 5"
+
+문자열 보간법
+변수를 \(변수이름) 이렇게 작성하여
+변수를 꺼내와서 "\(변수이름)" 으로 치환해준다
+
+
+#Topics - Comparing Value
+비교 연산자
+값이 같은 경우를 비교하려할 땐
+"="를 2개 사용한다
+
+if randomValue == hitValue {
+    print("YOU HIT!!")
+}
+//만약 randomValue와 hitValue의 값이 같다면
+//YOU HIT!! 문자를 출력해라
+
+그 외 비교 연산자에는
+<= // 같거나 작다
+>= // 같거나 크다
+!= // 같지 않다
+
+
+#Topics - Terminating functions : return
+이전에 작성한 코드에는 논리적 오류가 포함되어있다.
+논리적 오류란 문법적인 오류가 아닌
+사람의 실수로 발생하는 논리적인 오류로 추후 어플에 문제를 가져올 수 있다
+
+이번에 발생한 오류는
+        if randomValue == hitValue {
+            print("YOU HIT!!")
+        }
+        
+        if tryCount >= 5{
+            print("You lose...")
+        }
+여기서 발생했다.
+
+randomValue와 hitValue가 같다면 게임에서 승리하지만
+tryCount가 5가 된다면 게임에서 패배한다
+
+만약 5번째에 정답을 맞췄을 경우 게임에서 승리해야하지만
+위에 코드에서는 승리와 패배가 동시에 나타나게된다.
+
+따라서 return 을 사용하여
+코드를 종료해줘야한다.
+
+        if randomValue == hitValue {
+            print("YOU HIT!!")
+            return // 만약 게임에서 승리했다면 여기서 코드를 종료한다.
+        }
+        
+        if tryCount >= 5{
+            print("You lose...")
+        }
+위와 같이 return을 넣어줘야 논리적 오류가 발생하지 않는다.
+
+
+#Topics - Conditional execution
+
+        if randomValue > hitValue {
+            slider.minimumValue = Float(hitValue)
+            minimumValueLabel.text = String(hitValue)
+        } else if randomValue < hitValue {
+            slider.maximumValue = Float(hitValue)
+            maximumValueLabel.text = String(hitValue)
+        }
+위와 같이 if구문에서 위에 if가 충족하지 않을 경우
+아래 if를 실행하고 위에 if가 충족할 경우 아래 if는 실행하지 않도록 작성할 수 있다.
+
+위와 같이 작성하게되면 이전에 작성했던 return도 작성할 필요가 없다
+        if randomValue == hitValue {
+            print("YOU HIT!!")
+            reset()
+        } else if tryCount >= 5{
+            print("You lose...")
+            reset()
+        } else if randomValue > hitValue {
+            slider.minimumValue = Float(hitValue)
+            minimumValueLabel.text = String(hitValue)
+        } else if randomValue < hitValue {
+            slider.maximumValue = Float(hitValue)
+            maximumValueLabel.text = String(hitValue)
+        }
+이와 같이 말이다.
+
+
+#Topics - Showing Alerts
+    func showAlert(message: String) {
+        
+        let alert = UIAlertController(title: nil,
+                                      message: message,
+                                      preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK",
+                                     style: .default) { (action) in
+                                        self.reset()
+        }
+        
+        alert.addAction(okAction)
+        present(alert,
+                animated: true,
+                completion: nil)
+    }
+
+        if randomValue == hitValue {
+            showAlert(message: "YOU HIT!!")
+            reset()
+        } else if tryCount >= 5{
+            showAlert(message: "You lose...")
+            reset()
+        } else if randomValue > hitValue {
+            slider.minimumValue = Float(hitValue)
+            minimumValueLabel.text = String(hitValue)
+        } else if randomValue < hitValue {
+            slider.maximumValue = Float(hitValue)
+            maximumValueLabel.text = String(hitValue)
+        }
