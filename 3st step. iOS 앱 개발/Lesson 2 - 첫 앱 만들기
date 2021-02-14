@@ -9,3 +9,46 @@
 - 문제 해결
 - 앱 동작 방식 이해
 - ...
+
+# 앱 동작방식의 이해
+- 앱은 오브젝트로 구성
+- 오브젝트끼리 서로 메시지를 보냄
+- 앱은 이벤트에 의해 프로세스 동작함
+
+# Object
+- 특정 일을 수행하는 개체
+- 구성 (데이터, 메서드(기능))
+
+# Strings and Variable (문자열과 변수)
+- 문자열은 문자의 나열이다
+- "Hello \(변수)" // Hello 동재 (변수가 동재일 경우)
+- 변수는 어떠한 값을 저장할 수 있는 공간이다
+- Type (저장해야하는 값에 따라 타입이 변경되어야한다)
+
+# Variable vs Constant (var vs let)
+- var 변수 // 값이 변경될 수 있다
+- let 상수 // 값이 변경될 수 없다
+
+# 타입 추론
+- xcode에서는 타입을 작성하지 않아도 기본적인 코드라면 타입을 유추할 수 있다.
+- var currentValue = 0
+// 위 코드에서 currentValue는 0이다 이때 이 값은 Int타입이기 때문에
+// 원래 코드는 "var current: Int = 0" 와 같이 작성해야하지만
+// 타입 추론에 의해 ": Int"를 작성하지 않아도
+// xcode에서 자동으로 유추하여 적용시켜준다
+// 따라서 ": Int"를 생략해도 된다.
+
+# Local vs Instance 변수
+- Local : 특정 메서드 안에서만 실행되는 변수
+- Instance 변수 : 오브젝트안에서 전반적으로 사용되는 변수
+
+# Closure
+- 실행 가능한 코드 블럭
+- Closure = { }
+let action = UIAlertAction(title: "OK",
+                           style: .default,
+                           handler: { action in self.refresh() })
+// 위에서는 "{ action in self.refresh() }"가 클로저이다
+
+# Image
+- 1 point = 2 pixel
