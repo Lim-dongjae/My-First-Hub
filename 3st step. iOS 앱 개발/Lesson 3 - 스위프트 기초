@@ -1,0 +1,140 @@
+#아이폰 개발 시작하기
+2021년 02월 15일
+
+#주제 - iOS 앱 개발 #패스트 캠퍼스
+
+3강 스위프트 기초
+
+Totic
+- Swift Playground
+- Comment
+- Tuple
+- Booleans
+- Scope
+
+# Swift Playground
+- 스위프트 언어를 공부할 때 플레이그라운드는 매우 유용하게 사용될 수 있다.
+
+Xcode > File > New > Playground 로 실행한다.
+
+
+# Commnet
+- 개발자들과 협업할 때 이 코드가 어떤 코드인지 알려주기 위해 주석를 남겨놓는다
+let value = arc4random_uniform(100)
+// 이 코드는 랜덤 숫자를 뽑아냅니다.
+// 한줄 씩 주석처리할 수 있지만
+// 여러줄도 한번에 할 수 있다 ( 단축키 커맨드 + / )
+
+하지만 여러줄에 주석처리를 할 땐
+/*
+이렇게 하면
+더
+편하다
+*/
+
+# Tuple
+- 서로 연관있는 데이터가 동시에 필요할 경우가 있을 때 Tuple로 표현할 수 있다.
+
+let coordinate = (4, 6)
+
+let x = coordinate.0
+let y = coordinate.1
+
+let coordinatesNamed = (x: 2, y: 3)
+
+let x2 = coordinatesNamed.x
+let y2 = coordinatesNamed.y
+
+
+let (x3, y3) = coordinatesNamed
+
+
+#Boolean
+- Bool 타입은 코드의 흐름을 제어할 때 많이 사용한다
+let yes = true
+let no = false
+
+let isFourGreaterThanFive = 4 > 5
+
+if isFourGreaterThanFive {
+    print("---> 참")
+} else {
+    print("---> 거짓")
+}
+
+//if 조건... {
+//    조건이 참인 경우에 수행하는 코드를 작성
+//} else {
+//    조건이 거짓인 경우에 수행하는 코드를 작성
+//}
+
+
+let a = 5
+let b = 10
+
+//if a > b {
+//    print("---> a가 크다")
+//} else {
+//    print("---> b가 크다")
+//}
+
+
+let name1 = "Jin"
+let name2 = "Jason"
+
+let isTwoNameSame = name1 == name2
+
+if isTwoNameSame {
+    print("---> 이름이 같다")
+} else {
+    print("---> 이름이 다르다")
+}
+
+//논리 연산자
+let isJason = name2 == "Jason"
+let isMale = true
+
+let JasonAndMale = isJason && isMale
+// 제이슨은 제이슨 이면서 남자인가?
+// &&은 둘 다 만족해야 트루가 나온다
+
+let JasonOrMale = isJason || isMale
+// 제이슨은 제이슨이거나 아님 남자인가?
+// ||는 둘 중 하나만 만족해도 트루가 나온다
+
+// 비교 연산자
+//let greetingMessage: String
+//if isJason {
+//    greetingMessage = "Hello Jason"
+//} else {
+//    greetingMessage = "Hello SomeBody"
+//}
+//print("Msg: \(greetingMessage)")
+
+// 삼항 연산자
+let greetingMessage: String = isJason ? "Hello Jason" : "Hello SomeBody"
+print("Msg: \(greetingMessage)")
+//조건이 참인 경우에 왼쪽꺼 아닌경우에 오른쪽꺼 출력
+
+
+# Scope
+// 연수가 사용되는 범위를 스콥이라고 한다.
+// { ... scope ... }
+
+var hours = 50
+let payperHour = 10000
+var salary = 0
+
+if hours > 40 {
+    let extraHours = hours - 40
+    salary += extraHours * payperHour * 2
+    hours -= extraHours
+}
+
+salary += hours * payperHour
+
+//print(extraHours)
+//이 코드는 hours에 속해있는 로컬스콥 범위 안에 코드기 때문에
+//로컬 스콥 밖에서는 호출하지 못한다.
+
+// 위에서는 hours 코드에 들어있는 내용들이 범위가 스콥이다.
