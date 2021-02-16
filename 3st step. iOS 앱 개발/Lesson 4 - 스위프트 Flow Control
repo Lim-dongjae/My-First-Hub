@@ -1,0 +1,184 @@
+#아이폰 개발 시작하기
+2021년 02월 16일
+
+#주제 - iOS 앱 개발 #패스트 캠퍼스
+
+4강 스위프트 Flow Control
+
+// --- Flow Control
+// - if else
+// - while loop
+// - For loop
+// - Switch statement
+
+
+// ---- while loop
+//while 조건 {
+//    코드작성
+//}
+
+
+//var i = 0
+//while i < 10 {
+//    print(i)
+//    i += 1
+//}
+//print("--- while")
+
+
+var i = 10
+while i < 10 {
+    print(i)
+    
+    if i == 5 {
+        break
+    }
+    
+    i += 1
+}
+    
+
+print("--- Repeat")
+i = 10
+repeat {
+    print(i)
+    i += 1
+} while i < 10
+
+
+/*
+while 과 repeat는 코드 수행에 있어 차이점이 있다.
+while은 조건을 먼저 검사한 뒤 코드를 실핼하고
+ 
+repeat는 코드를 실행한 뒤 조건을 검사한다.
+따라서 위 코드에서 while은 아무것도 출력하지 않으며
+ 
+repeat는 10을 출력하게된다.
+ */
+
+
+ 
+// ---- For Loop
+
+let closedRange = 0...10
+let halfColseRange = 0..<10
+
+var sum = 0
+for i in closedRange {
+    print("--> \(i)")
+    sum += i
+}
+
+print("---> total sum: \(sum)")
+
+
+var sinValue: CGFloat = 0
+for i in closedRange {
+    sinValue = sin(CGFloat.pi/4 * CGFloat(i))
+}
+
+
+let name = "Jason"
+for _ in closedRange {
+    print("---> name: \(name)")
+}
+
+
+for i in closedRange {
+    if i % 2 == 0 {
+        print("---> 짝수: \(i)")
+    }
+}
+
+for i in closedRange where i % 2 == 0 {
+    print("---> 짝수: \(i)")
+}
+
+for i in closedRange where i % 2 != 0 {
+    print("---> 홀수: \(i)")
+}
+
+
+for i  in closedRange {
+    if i == 3 {
+        continue
+    }
+    
+    print("--> \(i)")
+}
+
+for i in closedRange {
+    for j in closedRange {
+        print("gugu -> \(i) * \(j) = \(i * j)")
+    }
+}
+// 반복문에 반복문도 사용이 가능하다
+// 가독성과 수행 성능이 좋지 않아서
+// 사용하는 것은 좋지 않다.
+
+
+
+// ---- Switch
+
+let num = 10
+
+switch num {
+case 0:
+    print("---> 0입니다. ")
+case 0...10:
+    print("---> 0 10 사이입니다. ")
+case 10:
+    print("---> 10입니다. ")
+default:
+    print("--> 나머지입니다. ")
+}
+
+let pet = "bird"
+
+switch pet {
+case "dog", "cat":
+    print("---> 집동물이네요?")
+case "bird":
+    print("---> 어머 새군요?")
+default:
+    print("---> 잘 모르겠습니다")
+}
+
+
+let num1 = 20
+switch num1 {
+case _ where num1 % 2 == 0:
+    print("---> 짝수")
+default:
+    print("---> 홀수")
+}
+
+
+
+//let coordinate = (x: 0, y: 10)
+//
+//switch coordinate {
+//case (0, 0):
+//    print("---> 원점 이네요")
+//case (_, 0):
+//    print("---> x축 이네요")
+//case (0, _):
+//    print("---> y축 이네요")
+//default:
+//    print("---> 좌표 어딘가")
+//}
+
+let coordinate = (x: 10, y: 10)
+
+switch coordinate {
+case (0, 0):
+    print("---> 원점 이네요")
+case (let x, 0):
+    print("---> x축 이네요, x:\(x)")
+case (0, let y):
+    print("---> y축 이네요, y:\(y)")
+case (let x, let y) where x == y:
+    print("---> x렁 y랑 같음 = x: \(x), y:\(y)")
+case (let x, let y):
+    print("---> 좌표 어딘가, x:\(x), y\(y)")
+}
