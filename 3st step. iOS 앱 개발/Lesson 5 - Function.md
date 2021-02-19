@@ -4,7 +4,7 @@
 
 ---
 
-5강 스위프트 __Function and Optional__
+5강 스위프트 __Function__
 
 ## Method - 어떠한 기능을 수행하는 코드 블럭
 ## Function - 어떠한 기능을 수행하는 코드 블럭
