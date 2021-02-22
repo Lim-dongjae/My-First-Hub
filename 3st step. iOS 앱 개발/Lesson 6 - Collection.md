@@ -253,17 +253,173 @@ printPractice(dic: practice)
 ### Set
 #### - 순서가 없고, 멤버가 유일한 컬렉션
 #### - 언제 쓰면 좋은가?
-##### 1. 
+##### 1. 중복이 없는 유니크한 아이템을 관리할 때
+##### 2. 값의 순서가 중요하지 않을 때
 
 ``` Swift
+//Set
+var someArray: Array<Int> = [1, 2, 3, 1]
+var someSet: Set<Int> = [1, 2, 3, 1]
+// Array와 Set의 선언방법은 비슷하나
+// Set은 중복된 값이 들어갈 수 없다.
+// Array와 Dictionary 처럼 Set도 아래와 같이 쉽게 선언할 수 있다.
+var someSet1: [Int] = [1, 2, 3]
 
+// Array와 Dictionary에서 사용했던 isEmpty 와 count 를 Dictionary에서도 사용할 수 있다.
+someSet.isEmpty
+someSet.count
+
+
+// 값이 있는지 확인하는 방법
+someSet.contains(4)
+someSet.contains(1)
+
+
+// 값을 추가하기
+someSet.insert(5)
+someSet // 결과 확인
+
+
+// 값을 삭제하기
+someSet.remove(5)
+someSet // 결과 확인
 ```
 
 ### Closure
-#### - 
-#### - 언제 쓰면 좋은가?
-##### 1. 
+#### - 이름이 없는 메서드 (함수인데 이름이 없다? = 클로저)
 
 ``` Swift
+//Closure
 
+//두개의 수를 곱하는 클로저
+var multiplyClosure: (Int, Int) -> Int = { (a: Int, b: Int) -> Int in
+    return a * b
+}
+
+//위의 코드를 아래와 같이 줄여볼 수 있다.
+//(Int, Int) -> Int에서 어떤 타입인지를 미리 알려줬으니
+//{ (a: Int, b: Int) -> Int에서는 타입을 생략해줘도 된다.
+//또한 타입 생략 후 소괄호 또한 생략해줘도 된다.
+//생략 후 코드는 아래와 같다.
+
+var multiplyClosure1: (Int, Int) -> Int = { a, b in
+    return a * b
+}
+//여기서 a와 b를 인덱스로 사용하게된다면 아래와 같이 또 줄여볼 수 있다.
+
+var multiplyClosure2: (Int, Int) -> Int = { return $0 * $1}
+//여기서 return또한 생략이 가능하다.
+//그러면 최종적으로 아래와 같은 코드가 완성된다.
+
+var multiplyClosure3: (Int, Int) -> Int = { $0 * $1}
+//이제 실행을 한번 해보자
+let result = multiplyClosure3(4, 2)
+//위와 같이 코드를 작성하고 실행하면 값이 나온다.
+
+//하지만 위와 같이 너무 많이 생략을 해버리면
+//다른 개발자가 코드를 봤을 때
+//어떤 코드인지 헷갈릴 수 있다.
+//따라서, 코드는 아래와 같이 적당히 줄여 사용한다.
+
+var multiplyClosure4: (Int, Int) -> Int = { a, b in
+    return a * b
+}
+
+let result1 = multiplyClosure4(4, 2) //결과 확인
+
+
+
+//실무에서 펑션이나 메서드에서 클로저를 파라미터로 받는 경우가 굉장히 많다.
+//그 예시를 살펴보자
+//이 부분은 정말 강력한 기능이기 떄문에 꼭 알아두자
+
+//두 수와 연산을 하는 클로저를 받아서 연산된 값을 리턴하는 함수
+func operateTwoNum(a: Int, b: Int, operation: (Int, Int) -> Int) -> Int {
+    let result = operation(a, b)
+    return result
+}
+
+//생성 해놓은 함수 파라미터에 미리 만들어준 multiplyClosure 클로저를 넣어 계산해보자
+operateTwoNum(a: 4, b: 2, operation: multiplyClosure4)
+
+
+//이번엔 곱하기가 아닌 더하기 클로저를 생성해봤다
+var addClosure: (Int, Int) -> Int = { a, b in
+    return a + b
+}
+
+//위에서 생성한 더하기 클로저를 함수 파라미터에 넣어주면 곱하기가 아닌 더하기로 계산해준다
+operateTwoNum(a: 4, b: 2, operation: addClosure)
+
+
+//위와 같이 미리 클로저를 만들어 두는 것이 아니라
+//즉흥적으로 필요한 클로저를 바로바로 만들어 입력하는 것도 가능하다.
+operateTwoNum(a: 4, b: 2) { a, b in
+    return a / b
+}
+
+
+//인풋만 있고 아웃풋이 없는 클로저 생성
+let voidClosure: () -> Void = {
+    print("iOS 개발자 짱, 클로져 사랑해")
+}
+
+voidClosure() // 결과 확인
+```
+
+## 중요 개념
+### Capturing Values
+#### Capturing Values는 클로저에서 제공하는 아주 강력한 기능이다.
+
+#### - 우선 scope에 대해 다시 알아보자
+#### > scope은 연수가 사용되는 범위를 스콥이라고 한다.
+#### > 로컬 스콥 밖에있는 코드는 로컬 스콥 안에서는 호출할 수 없다고 배웠다.
+```Swift
+/*
+아래 코드는 스콥이 바깥쪽에 하나 안쪽에 하나가 있다.
+ 
+안쪽에 있는 스콥에서는 밖에 있는 스콥에 접근이 가능했지만
+(안쪽 스콥 if true의 print 실행에선 오류가 발생하지 않는다)
+ 
+바깥쪽에 있는 스콥에서는 안에 있는 스콥에 접근이 불가능했다.
+(바깥쪽 if true의 print 실행에선 오류가 발생한다.)
+ 
+if true {
+    let numOutside = 3
+    
+    if true {
+        let numInside = 5
+        print(numOutside, numInside)
+    }
+    
+    print(numOutside, numInside)
+}
+*/
+```
+
+### 원래는 바깥쪽에 있던 컨스턴트를 잡아서 해당하는 스콥을 벗어나면 사용을 하지 못했지만
+### 클로저에게 캡처되면 해당하는 스콥을 벗어나더라도 사용이 가능하다
+
+#### 자세한 내용은 코드를 참고하여 확인해보자
+``` Swift
+//중요 개념!! Capturing Values
+var count = 0 // 스콥 밖 변수
+
+let incrementer = {
+    count += 1 // 스콥 밖에 변수를 캡쳐
+}
+
+// 실행 구문
+incrementer()
+incrementer()
+incrementer()
+incrementer()
+
+count // 결과 확인
+
+//위 와 같이 스콥 밖에 있는 변수를 캡쳐하여
+//실행하는 것이 가능하다.
+
+//이 개념은 어려운 개념이니
+//추가적으로 공부하는 것이 좋겠다.
 ```
