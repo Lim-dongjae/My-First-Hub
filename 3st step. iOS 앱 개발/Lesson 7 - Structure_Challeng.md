@@ -79,3 +79,47 @@ func distance(내위치: (x: Int, y: Int), 편의점위치: (x: Int, y: Int)) ->
 distance(내위치: myLocation, 편의점위치: store)
 
 ````
+
+
+## 도전2
+### 편의점의 정보를 입력하고
+### 나의 위치와 가장 가까운 편의점을 찾아
+### 프린트해보자
+
+````Swift
+// 가장 가까운 거리에 있는 편의점을 찾아 프린트하기
+// 여기선 이 전에 도전해봤던 "나와 가장 편의점 찾기" 함수가 필요하기 때문에
+// 함수를 가져온다.
+
+// 함수 가져오기(나와 가장 편의점 찾기)
+func distance(내위치: (x: Int, y: Int), 편의점위치: (x: Int, y: Int)) -> Double {
+    let distanceX = Double(내위치.x - 편의점위치.x)
+    let distanceY = Double(내위치.y - 편의점위치.y)
+    let distance = sqrt(distanceX * distanceX + distanceY * distanceY)
+    // sqrt는 인자에 루트를 씌워준다.
+    return distance
+}
+
+// 필요한 정보 선언
+let myLocation = (x: 3, y: 4) // 나의 현재 위치
+let store1 = (x: 3, y: 5, name: "GS편의점") // 편의점 정보 1
+let store2 = (x: 4, y: 6, name: "CU편의점") // 편의점 정보 2
+let store3 = (x: 1, y: 4, name: "세븐일레븐") // 편의점 정보 3
+let stores = [store1, store2, store3] // 편의점 정보의 묶음(Array)
+
+func printClosestStore(현재위치:(x: Int, y: Int), 편의점정보:[(x: Int, y: Int, name: String)]) {
+    var 가장가까운편의점이름 = ""
+    var 가장가까운편의점거리 = Double.infinity
+
+    for store in stores {
+        let 편의점과의거리 = distance(내위치: 현재위치, 편의점위치: (x: store.x, y: store.y))
+        가장가까운편의점거리 = min(편의점과의거리, 가장가까운편의점거리)
+        if 가장가까운편의점거리 == 편의점과의거리 {
+            가장가까운편의점이름 = store.name
+        }
+    }
+    print("가장 가까운 편의점은: \(가장가까운편의점이름) 입니다.")
+}
+
+printClosestStore(현재위치: myLocation, 편의점정보: stores)
+````
