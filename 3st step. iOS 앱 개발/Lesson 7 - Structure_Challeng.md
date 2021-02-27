@@ -123,3 +123,44 @@ func printClosestStore(현재위치:(x: Int, y: Int), 편의점정보:[(x: Int, 
 
 printClosestStore(현재위치: myLocation, 편의점정보: stores)
 ````
+
+
+## 도전3
+### 위에서 도전해본 과제에
+### Structure를 적용해보자
+### 현재 오류가 발생했다
+### 처음부터 다시 이해해보자
+````Swift
+//Structure 사용해보기
+struct 위치 {
+    let x: Int
+    let y : Int
+}
+
+struct 편의점 {
+    let loc: 위치
+    let name: String
+}
+
+//나의 위치
+let 나의위치 = (x: 3, y: 5)
+
+//테스트용 편의점 위치
+let 테스트편의점 = (x: 1, y: 6)
+
+//편의점 정보
+let store1 = (loc: 위치(x: 3, y: 5), name: "GS편의점")
+let store2 = (loc: 위치(x: 4, y: 6), name: "CU편의점")
+let store3 = (loc: 위치(x: 1, y: 4), name: "세븐일레븐")
+let stores = [store1, store2, store3]
+
+// 나와 편의점의 거리 구하기 - 피타고라스의 정리
+func distance(내위치: 위치, 편의점위치: 위치) -> Double {
+    let distanceX = Double(내위치.x - 편의점위치.x)
+    let distanceY = Double(내위치.y - 편의점위치.y)
+    let distance = sqrt(distanceX * distanceX + distanceY * distanceY)
+    // sqrt는 인자에 루트를 씌워준다.
+    return distance
+}
+// 오류발생 
+```
