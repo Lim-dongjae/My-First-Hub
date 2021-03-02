@@ -3,7 +3,7 @@
 #주제 - iOS 앱 개발 #패스트 캠퍼스 
 
 ---
-
+ 
 7강 스위프트 __Structure - property__
 #### Object = Data + Method
 ## 데이터와 메서드는 어떻게 구분할까?
