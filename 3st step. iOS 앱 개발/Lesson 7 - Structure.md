@@ -351,4 +351,47 @@ let lec3 = Lecture(name: "iOS Pro", instructor: "Jim", numOfStudent: 5)
 let lectures = [lec1, lec2, lec3]
 
 printLectureName(form: "Jack", lectures: lectures)
+````
+
+
+# __Protocol__
+## 지켜야 할 약속
+## (어떤 서비스를 이용할 때 우리가 해야할 일들의 목록)
+
+```Swift
+// Protocol
+
+// CustomStringConvertible
+struct Lecture: CustomStringConvertible {
+    var description: String {
+        return "Title: \(name), Instructor: \(instructor)"
+    }
+    
+    let name: String
+    let instructor: String
+    let numOfStudent: Int
+}
+
+
+func printLectureName(form instructor: String, lectures: [Lecture]) {
+    var lectureName = ""
+
+    for lecture in lectures {
+        if instructor == lecture.instructor {
+        // 만약에 instructor가 lecture.instructor와 같으면
+            lectureName = lecture.name
+            // lectureNmae은 lecture.name을 받아온다
+        }
+    }
+    print("강사님 강의는요: \(lectureName)")
+}
+
+
+let lec1 = Lecture(name: "iOS Baic", instructor: "Jason", numOfStudent: 5)
+let lec2 = Lecture(name: "iOS Advanced", instructor: "Jack", numOfStudent: 5)
+let lec3 = Lecture(name: "iOS Pro", instructor: "Jim", numOfStudent: 5)
+let lectures = [lec1, lec2, lec3]
+
+printLectureName(form: "Jack", lectures: lectures)
+print(lec1)
 ```
