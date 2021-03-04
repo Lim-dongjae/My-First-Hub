@@ -324,4 +324,178 @@ if let son = athelete1 as? FootballPlayer {
 
 
 ## Class 상속은 언제 사용할까?
-### 
+### 1. Single Responsiblility (단일 책임)
+### - 클래스의 깊이가 너무 깊어지면 복잡해지니 단일적인 상속을 하는 것이 좋다.
+
+### 2. Type Safety 
+### - 타입이 분명해야 할 때
+
+### 3. Shared Base Classes
+### - 다자녀가 있을 때
+
+### 4. Extensibility
+### - 확장성이 필요한 경우
+
+### 5. Identity
+### - 정체를 파악하기 위해
+
+
+
+## Class 생성자 이해하기
+### initializer (생성자)
+#### 이니셜 라이저는 아직 이해가되지 않으니 추가적인 공부가 필요하다.
+```Swift
+// 처음 코드
+//struct Grade {
+//    var letter: Character
+//    var points: Double
+//    var credits: Double
+//}
+//
+//class Person {
+//    var firstName: String
+//    var lastName: String
+//
+//    init(firstName: String, lastName: String) {
+//        self.firstName = firstName
+//        self.lastName = lastName
+//    }
+//
+//    func printMyName() {
+//        print("My name is \(firstName) \(lastName)")
+//    }
+//}
+//
+//class Student: Person {
+//    var grades: [Grade] = []
+//}
+//
+//// 학생인데 운동선수
+//class StudentAthlete: Student {
+//    var minimumTrainingTime: Int = 2
+//    var trainedTime: Int = 0
+//
+//    func train() {
+//        trainedTime += 1
+//    }
+//}
+//
+//// 운동선인데 축구선수
+//class FootballPlayer: StudentAthlete {
+//    var footballTeam = "FC Swift"
+//
+//    override func train() {
+//        trainedTime += 2
+//    }
+//}
+//
+
+
+struct Grade {
+    var letter: Character
+    var points: Double
+    var credits: Double
+}
+
+class Person {
+    var firstName: String
+    var lastName: String
+
+    init(firstName: String, lastName: String) {
+        self.firstName = firstName
+        self.lastName = lastName
+    }
+
+    func printMyName() {
+        print("My name is \(firstName) \(lastName)")
+    }
+}
+
+class Student: Person {
+    var grades: [Grade] = []
+    
+    override init(firstName: String, lastName: String) {
+        super.init(firstName: firstName, lastName: lastName)
+    }
+    
+    convenience init(student: Student) {
+        self.init(firstName: student.firstName, lastName: student.lastName)
+    }
+}
+
+// -----
+// 2-Phase Initialization ( 클래스 생성시의 2단계)
+// Phase 1
+// 모든 스토드 프로퍼티는 이니셜라이즈 되어야한다.
+// 자식 클래스의 프로퍼티부터 이니셜라이즈 되어야한다.
+// 페이즈1이 끝나기 전에는 어떠한 메소드나 프로퍼티를 사용할 수 없다.
+
+// Phase 2
+// 부모 프로퍼티의 셋팅을 끝내야 프로퍼티나 메소드를 사용할 수 있다.
+
+// 위와 같은 규칙이 없다면
+// 이니셜라이저에서 프로퍼티가 셋팅도 안된 상태에서
+// 인스턴스 메소드를 호출하게 되고
+// 이 경우 원하는대로 작동하지 않고
+// 버그가 발생할 수 있다.
+
+// 어떻게 작성하는지 알아보자
+// -----
+
+// 학생인데 운동선수
+class StudentAthlete: Student {
+    var minimumTrainingTime: Int = 2
+    var trainedTime: Int = 0
+    var sports: [String]
+    
+    init(firstName: String, lastName: String, sports: [String]) {
+    // Phase1
+        self.sports = sports
+        super.init(firstName: firstName, lastName: lastName)
+        
+        // Phase2
+        self.train()
+        // 위 코드가 Phase1 구간으로 가면 오류가 발생한다.
+    }
+    
+    // 이니셜 라이저가 커질 경우에 파라미터가 많아질 수 있다.
+    // 이 경우에 간단하게 만드는 방법이 있다.
+    // 컨비니언스 이니셜라이즈
+    convenience init(name: String) {
+        self.init(firstName: name, lastName: "", sports: [])
+    }
+
+    func train() {
+        trainedTime += 1
+    }
+}
+
+
+
+// 운동선인데 축구선수
+class FootballPlayer: StudentAthlete {
+    var footballTeam = "FC Swift"
+
+    override func train() {
+        trainedTime += 2
+    }
+}
+
+let student1 = Student(firstName: "Jason", lastName: "Lee")
+let student2 = StudentAthlete(firstName: "Jay", lastName: "Lee", sports: ["Football"])
+
+// 컨비니언스 이니셜라이즈
+let student3 = StudentAthlete(name: "Mike")
+
+let student1_1 = Student(student: student1)
+
+
+
+// designated vs convenience
+// 지정이니셜라이저 vs 간편이니셜라이저
+
+// 규칙
+// designated는 자신의 부모의 designated를 호출해야한다.
+// convenience는 같은 클래스의 이니셜라이저를 꼭 하나 호출해야한다.
+// convenience는 궁극적으로는 designated를 호출해야한다.
+```
