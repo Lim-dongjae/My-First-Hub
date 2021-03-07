@@ -367,9 +367,73 @@ class DetailViewModel {
 
 ### 위와 같이 리팩토링 후에는 기존 잔재들을 지워주는 것이 좋다.
 ### (지금은 참고를 위하여 잔재를 남겨두었다)
-
-
 이해가 되지 않는 점.
 1) 분명 위에서는 단일 책임을 갖도록 해줘야한다고 했는데
 이번 시간에 배운 것은 책임을 분산시키는 일이였다.
 이 부분은 다음 시간에 다시 알아보도록하자.
+
+
+## 보다 깔끔한 코드 정리를 위하여
+### 뷰모델에 많은 클래스들이 존재하면 헷갈릴 가능성이 있기 때문에
+### 스트럭트를 따로 관리해준다.
+```Swift
+// 방법
+// 새로운 파일 - 코코아 터치 클래스 - NSObject - 코드 복사 - 기존 코드 삭제
+
+struct BountyInfo {
+    let name: String
+    let bounty: Int
+    
+    var image: UIImage? {
+        return UIImage(named: "\(name).jpg")
+    }
+    
+    init(name: String, bounty: Int) {
+        self.name = name
+        self.bounty = bounty
+    }
+}
+```
+
+## 현상금 랭킹대로 나열하기
+### 아래 코드처럼 간단하게 코드 몇줄 작성과 변경으로
+### 앱 전반적인 기능을 수정할 수 있게되었다.
+### 디자인 모델을 이용하여 리팩토링하면 이와 같이
+### 쉽게 유지관리가 가능하다.
+
+```Swift
+// viewModel 클래스 만들기
+class BountyViewModel {
+    let bountyInfoList: [BountyInfo] = [
+        BountyInfo(name: "brook", bounty: 33000000),
+        BountyInfo(name: "chopper", bounty: 50),
+        BountyInfo(name: "franky", bounty: 44000000),
+        BountyInfo(name: "luffy", bounty: 300000000),
+        BountyInfo(name: "nami", bounty: 16000000),
+        BountyInfo(name: "robin", bounty: 80000000),
+        BountyInfo(name: "sanji", bounty: 77000000),
+        BountyInfo(name: "zoro", bounty: 120000000)
+    ]
+    // 이렇게 옮기고 나면 기존 코드들에서 오류가 발생한다.
+    // 그 부분을 뷰모델 클래스에서 메서드로 만들어줘야한다.
+    
+    // 랭킹 나열을 위한 리팩토링
+    var sortedList: [BountyInfo] {
+        let sortedList = bountyInfoList.sorted { prev, next in
+            return prev.bounty > next.bounty
+            // 프리뷰 아이템에 앞에있는 바운티가 뒤에있는 바운티의 현상금보다 커야한다.
+        }
+        return sortedList
+    }
+    
+    var numOfBountyInfoList: Int {
+        return bountyInfoList.count
+    }
+    
+    func bountyInfo(at index: Int) -> BountyInfo{
+//        return bountyInfoList[index]
+        // 랭킹 나열을 위한 리팩토링
+        return sortedList[index]
+    }
+}
+```
