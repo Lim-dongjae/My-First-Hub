@@ -64,3 +64,45 @@ class GridCell: UICollectionViewCell {
     }
 }
 ```
+
+## Cell Size 계산
+```Swift
+func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let itemSpacing: CGFloat = 10
+        // 아이템의 간격은 10이다.
+        let textAreaHeight: CGFloat = 65
+        // 텍스트 에어리어의 높이는 65이다.
+        
+        
+        let width: CGFloat = (collectionView.bounds.width - itemSpacing)/2
+        // 너비는 CGFloat 타입이고 값은 collectionView의 너비와 아이템 간격(10)을 뺀 뒤 2로 나눈 값이다.
+        // 팁 : bounds 를 사용하면 사이즈를 알 수 있다. (collectionView.bounds.width -> collectionView의 너비 사이즈)
+
+        let height: CGFloat = width * 10/7 + textAreaHeight
+        // 높이는 CGFloat 타입이고 값은 너비 * 10분에 7 + textAreaHeight 이다.
+
+        return CGSize(width: width, height: height)
+        // CGSize는 너비는 width이고, 높이는 height이다.
+    }
+```
+
+## Animation 개념
+#### 시간에 따라, 뷰의 상태가 바뀌는 것
+#### 애니메이션의 3요소 (시작, 끝, 시간)
+사용자의 사용성 개선, 몰입성 증진
+
+### Animation API
+#### 애니메이션 사용 시 자주 사용하게 될 코드
+```Swift
+UIView.animate(
+    withDuration: 1.0, // 진행 시간
+    animations: {
+        layoutIfNeeded() // 애니메이션 클로져(애니메이션 시킬 값)
+    }
+)
+```
+
+## 실습
+```Swift
+
+```
