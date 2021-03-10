@@ -102,7 +102,148 @@ UIView.animate(
 )
 ```
 
-## 실습
+## 실습 - 뷰 속성을 이용한 애니메이션 효과주기 1
 ```Swift
+override func viewDidLoad() {
+        super.viewDidLoad()
+        updateUI()
+        // 에니메이션 준비
+        prepareAnimation()
+    }
+    
+    // 뷰가 보여졌다는 메서드
+    override func viewDidAppear(_ animated: Bool) {
+        // 뷰가 보여지면 애니메이션을 진행하자
+        super.viewDidAppear(animated)
+        // 애니메이션 시작
+        showAnimation()
+    }
+    ㅋ
+    // 애니메이션 호출 메서드
+    private func prepareAnimation() {
+        nameLabelCenterX.constant = view.bounds.width
+        // nameLabel 초기 X 위치를 view.bounds.width 값만큼 이동한다.(즉 화면 밖으로 나간다.)
+        bountyLabelCenterX.constant = view.bounds.width
+        // bountyLabel 초기 X 위치를 view.bounds.width 값만큼 이동한다.(즉 화면 밖으로 나간다.)
+    }
+    
+    private func showAnimation() {
+        nameLabelCenterX.constant = 0
+        // nameLabel을 원상복구한다 (기본값이 0이였다.)
+        bountyLabelCenterX.constant = 0
+        // bountyLabel을 원상복구한다 (기본값이 0이였다.)
+        
+        // 간단한 애니메이션
+//        UIView.animate(withDuration: 0.3) {
+//            self.view.layoutIfNeeded()
+//        }
+        
+        // 여러 설정이 가능한 애니메이션
+//        UIView.animate(withDuration: 0.3,
+//                       delay: 0.1,
+//                       options: .curveEaseIn,
+//                       animations: { self.view.layoutIfNeeded() },
+//                       completion: nil)
+//
+        // 튀기는 효과를 넣는 애니메이션
+        UIView.animate(withDuration: 0.3,
+                       delay: 0.4,
+                       usingSpringWithDamping: 0.6,
+                       initialSpringVelocity: 2,
+                       options: .allowUserInteraction,
+                       animations: { self.view.layoutIfNeeded() },
+                       // self.view.layoutIfNeeded() 설명
+                       // 오토레이아웃이 있는데 constant를 변경하면
+                       // 레이아웃을 다시 설정해줘야한다.
+                       // 따라서 레이아웃팅을 하면서 애니메이션을 보여주도록 하는 것이다.
+                       completion: nil)
+        
+        // 이미지에 효과를 주기
+        UIView.transition(with: imgView,
+                          duration: 0.3,
+                          options: .transitionFlipFromLeft,
+                          animations: nil,
+                          // 여기선 constant는 변경이 없이 때문에 nil값을 넣어준다.
+                          completion: nil)
+    }
+```
 
+## 실습 - 뷰 속성을 이용한 애니메이션 효과주기 2
+```Swift
+    //뷰모델 선언
+    let viewModel = DetailViewModel()
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        updateUI()
+        // 에니메이션 준비
+        prepareAnimation()
+    }
+    
+    // 뷰가 보여졌다는 메서드
+    override func viewDidAppear(_ animated: Bool) {
+        // 뷰가 보여지면 애니메이션을 진행하자
+        super.viewDidAppear(animated)
+        // 애니메이션 시작
+        showAnimation()
+    }
+    
+    // 애니메이션 호출 메서드
+    private func prepareAnimation() {
+        // 새로운 애니메이션을 만들어보자
+        nameLabel.transform = CGAffineTransform(translationX: view.bounds.width, y: 0).scaledBy(x: 3, y: 3).rotated(by: 180)
+        // nameLabel을 변형한다 -> X좌표는 view.bounds.width 값 만큼, y좌표는 0만큼 이동하고 크기는 x, y 모두 3배씩 커진다 그리고 180도 돌아가있는다.
+        bountyLabel.transform = CGAffineTransform(translationX: view.bounds.width, y: 0).scaledBy(x: 3, y: 3).rotated(by: 180)
+        // bountyLabel을 변형한다 -> X좌표는 view.bounds.width 값 만큼, y좌표는 0만큼 이동하고 크기는 x, y 모두 3배씩 커진다 그리고 180도 돌아가있는다.
+        
+        nameLabel.alpha = 0
+        // nameLabel의 투명도는 0이다
+        bountyLabel.alpha = 0
+        // bountyLabel의 투명도는 0이다
+    }
+    
+    private func showAnimation() {
+        // 이미지에 효과를 주기
+        UIView.transition(with: imgView,
+                          duration: 0.3,
+                          options: .transitionFlipFromLeft,
+                          animations: nil,
+                          // 여기선 constant는 변경이 없이 때문에 nil값을 넣어준다.
+                          completion: nil)
+        
+        // 새로운 애니메이션을 만들어보자
+        UIView.animate(withDuration: 1,
+                       delay: 0,
+                       usingSpringWithDamping: 0.6,
+                       initialSpringVelocity: 2,
+                       options: .allowUserInteraction,
+                       animations: {
+                        self.view.layoutIfNeeded()
+                        self.nameLabel.transform = CGAffineTransform.identity
+                        // 위에서 변형된 뷰의 값들을 원상태로 돌려보자
+                        self.nameLabel.alpha = 1
+                       },
+                       completion: nil)
+        
+        UIView.animate(withDuration: 1,
+                       delay: 0.2,
+                       usingSpringWithDamping: 0.6,
+                       initialSpringVelocity: 2,
+                       options: .allowUserInteraction,
+                       animations: {
+                        self.view.layoutIfNeeded()
+                        self.bountyLabel.transform = CGAffineTransform.identity
+                        // 위에서 변형된 뷰의 값들을 원상태로 돌려보자
+                        self.bountyLabel.alpha = 1
+                       },
+                       completion: nil)
+    }
+    
+    func updateUI() {
+        if let bountyInfo = viewModel.bountyInfo {
+            imgView.image = bountyInfo.image
+            nameLabel.text = bountyInfo.name
+            bountyLabel.text = "\(bountyInfo.bounty)"
+        }
+    }
 ```
