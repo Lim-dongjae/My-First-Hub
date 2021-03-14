@@ -230,7 +230,92 @@ extension AVPlayer {
         tapHandler?(todaysItem)
     }
 }
+```
+
+## 실습 - 플레이어뷰 만들기
+```Swift
+class SimplePlayer {
+    // TODO: 싱글톤 만들기, 왜 만드는가?
+    static let shared = SimplePlayer()
+    
+    
+    private let player = AVPlayer()
+
+    var currentTime: Double {
+        // TODO: currentTime 구하기
+        return player.currentItem?.currentTime().seconds ?? 0
+    }
+    
+    var totalDurationTime: Double {
+        // TODO: totalDurationTime 구하기
+        return player.currentItem?.duration.seconds ?? 0
+    }
+    
+    var isPlaying: Bool {
+        // TODO: isPlaying 구하기
+        return player.isPlaying
+    }
+    
+    var currentItem: AVPlayerItem? {
+        // TODO: currentItem 구하기
+        return player.currentItem
+    }
+    
+    init() { }
+    
+    func pause() {
+        // TODO: pause구현
+        player.pause()
+    }
+    
+    func play() {
+        // TODO: play구현
+        player.play()
+    }
+    
+    func seek(to time:CMTime) {
+        // TODO: seek구현
+        player.seek(to: time)
+    }
+    
+    func replaceCurrentItem(with item: AVPlayerItem?) {
+        // TODO: replace current item 구현
+        player.replaceCurrentItem(with: item)
+    }
+    
+    func addPeriodicTimeObserver(forInterval: CMTime, queue: DispatchQueue?, using: @escaping (CMTime) -> Void) {
+        player.addPeriodicTimeObserver(forInterval: forInterval, queue: queue, using: using)
+    }
+}
 
 
-
+// 헤더뷰 어떻게 표시할까?
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        switch kind {
+        case UICollectionView.elementKindSectionHeader:
+            guard let item = trackManager.todaysTrack else {
+                return UICollectionReusableView()
+            }
+            
+            guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "TrackCollectionHeaderView", for: indexPath) as? TrackCollectionHeaderView else {
+                return UICollectionReusableView()
+            }
+            
+            header.update(with: item)
+            header.tapHandler = { item -> Void in
+                // 플레이어 띄우기
+                let playerStoryboard = UIStoryboard.init(name: "Player", bundle: nil)
+                guard let playerVC = playerStoryboard.instantiateViewController(identifier: "PlayerViewController") as? PlayerViewController else { return }
+                // 곡 전달하기
+                playerVC.simplePlayer.replaceCurrentItem(with: item)
+                self.present(playerVC, animated: true, completion: nil)
+                print("---> item title: \(item.convertToTrack()?.title)")
+            }
+            
+            // TODO: 헤더 구성하기
+            return header
+        default:
+            return UICollectionReusableView()
+        }
+    }
 ```
