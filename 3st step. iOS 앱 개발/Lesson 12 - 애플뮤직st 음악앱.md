@@ -319,3 +319,102 @@ class SimplePlayer {
         }
     }
 ```
+## 플레이어뷰에서 플레이 버튼 클릭 시 이미지가 변경되는 것
+```Swift
+func updatePlayButton() {
+        // TODO: 플레이버튼 업데이트 UI작업 > 재생/멈춤
+        if simplePlayer.isPlaying {
+            let configuration = UIImage.SymbolConfiguration(pointSize: 40)
+            let image = UIImage(systemName: "pause.fill", withConfiguration: configuration)
+            playControlButton.setImage(image, for: .normal)
+        } else {
+            let configuration = UIImage.SymbolConfiguration(pointSize: 40)
+            let image = UIImage(systemName: "play.fill", withConfiguration: configuration)
+            playControlButton.setImage(image, for: .normal)
+        }
+    }
+```
+## 플레이어뷰에 씨킹하기
+```Swift
+   @IBAction func beginDrag(_ sender: UISlider) {
+        isSeeking = true
+    }
+    
+    @IBAction func endDrag(_ sender: UISlider) {
+        isSeeking = false
+    }
+    
+    @IBAction func seek(_ sender: UISlider) {
+        // TODO: 시킹 구현
+        guard let currentItem = simplePlayer.currentItem else { return }
+        let position = Double(sender.value) // 0....1 -> 0.5
+        let seconds = position * currentItem.duration.seconds
+        // 3분짜리 음악이면 초로 180초이다.
+        // 씨킹이 중간에 됐다고하면 0.5이다.
+        // 이 때 위 코드처럼 진행된다면 90.1231235235 이런 값이 나올 것이다.
+        // 이걸 currentItem.duration.seconds 여기서 seconds를 붙여줘서 90.12 이렇게 표시되도록 하는 것이다.
+        let time = CMTime(seconds: seconds, preferredTimescale: 100)
+        simplePlayer.seek(to: time)
+    }
+
+    func updateTime(time: CMTime) {
+        // print(time.seconds)
+        // currentTime label, totalduration label, slider
+        
+        // TODO: 시간정보 업데이트, 심플플레이어 이용해서 수정
+        currentTimeLabel.text = secondsToString(sec: simplePlayer.currentTime)   // 3.1234 >> 00:03
+        totalDurationLabel.text = secondsToString(sec: simplePlayer.totalDurationTime)  // 39.2045  >> 00:39
+        
+        if isSeeking == false {
+            // 노래 들으면서 시킹하면, 자꾸 슬라이더가 업데이트 됨, 따라서 시킹아닐때마 슬라이더 업데이트하자
+            // TODO: 슬라이더 정보 업데이트
+            // 씨킹하지 않을 때 슬라이드를 업데이트한다.
+            timeSlider.value = Float(simplePlayer.currentTime/simplePlayer.totalDurationTime)
+        }
+    }
+```
+## 다크모드 - 간단한 버전
+#### 색상을 사용할 때 시스템 색상을 사용하면
+#### 기본적으로 애플에서 다크모드에 대응을 해놨기 때문에
+#### 자동으로 색상이 변하는 것을 확인할 수 있다.
+```Swift
+// 플레이어가 표시될 때인 viewWillAppear를 보면
+// updateTintColor()이라는 코드가 있다.
+// 이 코드로 인해 플레이어를 실행했을 때
+// 다크모드면 토글버튼과 슬라이더가 흰색
+// 화이트모드면 토글버큰과 슬라이더가 검정색으로 표시된다.
+   override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        updateTintColor()
+        updateTrackInfo()
+    }
+
+// 위의 코드는 아래 함수처럼 사용되었고.
+    func updateTintColor() {
+        playControlButton.tintColor = DefaultStyle.Colors.tint
+        timeSlider.tintColor = DefaultStyle.Colors.tint
+    }
+
+// 위의 코드는 아래처럼 작성되었다.
+// 이 코드는 아직 어려우니 참고만 하고 무슨 뜻인지 이해부터 하자.
+public enum DefaultStyle {
+    public enum Colors {
+        public static let tint: UIColor = {
+            if #available(iOS 13.0, *) {
+                return UIColor { traitCollction in
+                // tint컬러에 대해서 우리는 정의를 했다 -> UIColor 컬러를 tint 컬러로 반환시킬건데 컬러를 반환할 때 조건이 아래와 같이 있다.
+                    if traitCollction.userInterfaceStyle == .dark {
+                    // traitCollction를 통해 우리는 현재 다크모드인지 아닌지를 확인할 수 있다.
+                    // 현재 traitCollction의 userInterfaceStyle가 다크모드면 흰색을 반환하고 아니면 검정을 반환해라.
+                        return .white
+                    } else {
+                        return .black
+                    }
+                }
+            } else {
+                return .black
+            }
+        }()
+    }
+}
+```
