@@ -397,7 +397,7 @@ extension Storage {
 }
 ```
 
-## Storage
+## 투두 리스트 작성하기
 ```Swift
 @IBAction func addTaskButtonTapped(_ sender: Any) {
         // [완] TODO: Todo 태스크 추가
@@ -443,3 +443,6 @@ func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath:
         return cell
     }
 ```
+
+## json 파일 확인하기
+커맨드 + 스페이스 -> 터미널 -> cd 경로작성 -> open . -> 파일 열기
