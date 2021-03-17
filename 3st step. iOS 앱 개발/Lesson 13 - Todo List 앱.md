@@ -272,5 +272,174 @@ func updateUI(todo: Todo) {
 
 ## Storage
 ```Swift
+import Foundation
+ 
+public class Storage {
+    
+    private init() { }
+    
+    // TODO: directory 설명
+    // TODO: FileManager 설명 
+    enum Directory {
+        case documents
+        case caches
+        
+        var url: URL {
+            let path: FileManager.SearchPathDirectory
+            switch self {
+            case .documents:
+                path = .documentDirectory
+            case .caches:
+                path = .cachesDirectory
+            }
+            return FileManager.default.urls(for: path, in: .userDomainMask).first!
+        }
+    }
+    
+    // TODO: Codable 설명, JSON 타입 설명
+    // TODO: Codable encode 설명
+    // TODO: Data 타입은 파일 형태로 저장 가능
+    
+    static func store<T: Encodable>(_ obj: T, to directory: Directory, as fileName: String) {
+        let url = directory.url.appendingPathComponent(fileName, isDirectory: false)
+        print("---> save to here: \(url)")
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted
+        
+        do {
+            let data = try encoder.encode(obj)
+            if FileManager.default.fileExists(atPath: url.path) {
+                try FileManager.default.removeItem(at: url)
+            }
+            FileManager.default.createFile(atPath: url.path, contents: data, attributes: nil)
+        } catch let error {
+            print("---> Failed to store msg: \(error.localizedDescription)")
+        }
+    }
+    
+    // TODO: 파일은 Data 타입형태로 읽을수 있음
+    // TODO: Data 타입은 Codable decode 가능
+    
+    static func retrive<T: Decodable>(_ fileName: String, from directory: Directory, as type: T.Type) -> T? {
+        let url = directory.url.appendingPathComponent(fileName, isDirectory: false)
+        guard FileManager.default.fileExists(atPath: url.path) else { return nil }
+        guard let data = FileManager.default.contents(atPath: url.path) else { return nil }
+        
+        let decoder = JSONDecoder()
+        
+        do {
+            let model = try decoder.decode(type, from: data)
+            return model
+        } catch let error {
+            print("---> Failed to decode msg: \(error.localizedDescription)")
+            return nil
+        }
+    }
+    
+    static func remove(_ fileName: String, from directory: Directory) {
+        let url = directory.url.appendingPathComponent(fileName, isDirectory: false)
+        guard FileManager.default.fileExists(atPath: url.path) else { return }
+        
+        do {
+            try FileManager.default.removeItem(at: url)
+        } catch let error {
+            print("---> Failed to remove msg: \(error.localizedDescription)")
+        }
+    }
+    
+    static func clear(_ directory: Directory) {
+        let url = directory.url
+        do {
+            let contents = try FileManager.default.contentsOfDirectory(at: url, includingPropertiesForKeys: nil, options: [])
+            for content in contents {
+                try FileManager.default.removeItem(at: content)
+            }
+        } catch {
+            print("---> Failed to clear directory ms: \(error.localizedDescription)")
+        }
+    }
+}
 
+// MARK: TEST 용
+extension Storage {
+    static func saveTodo(_ obj: Todo, fileName: String) {
+        let url = Directory.documents.url.appendingPathComponent(fileName, isDirectory: false)
+        print("---> [TEST] save to here: \(url)")
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .prettyPrinted
+        
+        do {
+            let data = try encoder.encode(obj)
+            if FileManager.default.fileExists(atPath: url.path) {
+                try FileManager.default.removeItem(at: url)
+            }
+            FileManager.default.createFile(atPath: url.path, contents: data, attributes: nil)
+        } catch let error {
+            print("---> Failed to store msg: \(error.localizedDescription)")
+        }
+    }
+    
+    static func restoreTodo(_ fileName: String) -> Todo? {
+        let url = Directory.documents.url.appendingPathComponent(fileName, isDirectory: false)
+        guard FileManager.default.fileExists(atPath: url.path) else { return nil }
+        guard let data = FileManager.default.contents(atPath: url.path) else { return nil }
+        
+        let decoder = JSONDecoder()
+        
+        do {
+            let model = try decoder.decode(Todo.self, from: data)
+            return model
+        } catch let error {
+            print("---> Failed to decode msg: \(error.localizedDescription)")
+            return nil
+        }
+    }
+}
+```
+
+## Storage
+```Swift
+@IBAction func addTaskButtonTapped(_ sender: Any) {
+        // [완] TODO: Todo 태스크 추가
+        // add task to view model
+        // and tableview reload or update
+        guard let  detail = inputTextField.text, detail.isEmpty == false else { return }
+        let todo = TodoManager.shared.createTodo(detail: detail, isToday: isTodayButton.isSelected)
+        todoListViewModel.addTodo(todo)
+        collectionView.reloadData()
+        inputTextField.text = ""
+        isTodayButton.isSelected = false
+    }
+
+
+func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TodoListCell", for: indexPath) as? TodoListCell else {
+            return UICollectionViewCell()
+        }
+        var todo: Todo
+        if indexPath.section == 0 {
+            todo = todoListViewModel.todayTodos[indexPath.item]
+        } else {
+            todo = todoListViewModel.upcompingTodos[indexPath.item]
+        }
+        cell.updateUI(todo: todo)
+        
+        // [완] TODO: 커스텀 셀
+        // [완] TODO: todo 를 이용해서 updateUI
+        // [완] TODO: doneButtonHandler 작성
+        // [완] TODO: deleteButtonHandler 작성
+        
+        cell.doneButtonTapHandler = { isDone in
+            todo.isDone = isDone
+            self.todoListViewModel.updateTodo(todo)
+            self.collectionView.reloadData()
+        }
+        
+        cell.deleteButtonTapHandler = {
+            self.todoListViewModel.deleteTodo(todo)
+            self.collectionView.reloadData()
+        }
+        
+        return cell
+    }
 ```
