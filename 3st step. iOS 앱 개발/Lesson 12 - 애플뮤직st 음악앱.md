@@ -6,6 +6,23 @@
  
 12강 스위프트 __애플뮤직st 음악앱__
 복습: 20.03.21
+### 이해가 가지 않는 코드
+1. seak할 때 슬라이더를 움직이는 코드
+```Swift
+IBAction func seek(_ sender: UISlider) {
+        guard let currentItem = simplePlayer.currentItem else { return }
+        let position = Double(sender.value)
+        let seconds = currentItem.duration.seconds * position
+        let time = CMTime(seconds: seconds, preferredTimescale: 100)
+        simplePlayer.seek(to: time)
+    }
+```
+
+### 코드와 친해지기 위해 임의적으로 수정해볼 부분
+1. 셀을 터치해서 아이템을 가져오면 노래를 바로 시작하게 바꿔보기
+2. 심플플레이어에서 나올 경우 노래를 중단시키지 않고 메인화면에서 재생과 중지를 선택할 수 있게 만들어보기 (너무 어려울듯)
+3. 심플플레이어에서 현재 플레이 시간, 아이템의 총 시간만 표시되니 아이템의 남은 시간도 표시되게 만들어보자
+4. ...
 
 ## 뮤직앱 구현 계획
 1. 메인화면
