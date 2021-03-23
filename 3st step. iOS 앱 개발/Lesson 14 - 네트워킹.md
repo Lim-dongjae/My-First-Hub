@@ -411,3 +411,52 @@ let dataTask = session.dataTask(with: requestURL) { (data, response, error) in
 
 dataTask.resume()
 ```
+
+## 복습
+#### 한가지 팁 : 옵셔널 타입인 프로퍼티의 옵셔널을 벗겨주고 싶다면 코드 뒤에 !를 붙이면 된다.
+#### 추가적으로 복습할 기본 개념 : enum, 
+```Swift
+// Data에서 Struck로 파싱하기 위해 스트럭트를 만들어보자
+// 파싱이란 어떠한 데이터를 내 입맛에 맞는 오브젝트로 바꾸는 과정이다.
+struct Response: Codable {
+    let resultCount: Int
+    let tracks: [Track]
+    
+    enum CodingKeys: String, CodingKey {
+        case resultCount
+        case tracks = "results"
+    }
+}
+
+struct Track: Codable {
+    let title: String
+    let artistName: String
+    let thumbnailPath: String
+    
+    enum CodingKeys: String, CodingKey {
+        case title = "trackName"
+        case artistName
+        case thumbnailPath = "artworkUrl100"
+    }
+}
+
+// 파싱 및 트랙 가져오기
+    do {
+        let decoder = JSONDecoder()
+        // decoder는 JSONDecoder이다. (디코더를 만든 것 이다.)
+        let response = try decoder.decode(Response.self, from: resultData)
+        // 리스펀스 객체는 디코더를 이용해서 디코딩을 할건데 리스펀스의 형태로 디코딩을 할 것이다. resultData로 부터
+        let tracks = response.tracks
+        
+        print("--> tracks: \(tracks.count)  -\(tracks.first?.title), \(tracks.last?.thumbnailPath)")
+        
+        
+        
+    } catch let error {
+        print("---> error: \(error.localizedDescription)")
+    }
+//    print("---> result : \(resultString)")
+}
+
+dataTask.resume()
+```
