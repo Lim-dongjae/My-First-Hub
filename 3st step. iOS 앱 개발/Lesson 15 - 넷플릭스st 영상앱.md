@@ -217,49 +217,7 @@ struct Movie: Codable {
     }
 }
 ```
-```Swift
-class SearchViewController: UIViewController {
-    
-    @IBOutlet weak var searchBar: UISearchBar!
-    @IBOutlet weak var resultCollectionView: UICollectionView!
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
-    
-}
 
-extension SearchViewController: UISearchBarDelegate {
-    // 키보드가 올라와 있을 때, 내려가게하기 함수
-    private func dismissKeyboard() {
-        searchBar.resignFirstResponder()
-    }
-    
-    // 검색 화면에서 검색 버튼을 눌렀을 때 아래 코드 실행
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        
-        // 키보드가 올라와 있을 때, 내려가게하기 실행코드
-        dismissKeyboard()
-        
-        // 검색어가 있는지
-        guard let searchTerm = searchBar.text, searchTerm.isEmpty == false else { return }
-        
-        // 네트워킹을 통한 검색
-        // - 최종 목표 : 서치텀을 가지고 네트워킹을 통해서 영화 검색
-        // - 검색API가 필요
-        // - 결과를 받아올 모델 Movie, Response
-        // - 결과를 받아와서, CollectionView로 표현해주기
-        
-        // - 결과를 받아와서, CollectionView로 표현해주기 -> 만들기
-        SearchAPI.search(searchTerm) { movies in
-            // CollectionView 표현
-            print("--> 몇개가 넘어왔나? \(movies.count), 첫번째 무비 제목: \(movies.first?.title)")
-        }
-        
-        print("---> 검색어는 \(searchTerm)")
-    }
-}
-```
 ## 검색하여 내려온 정보를 컬렌션뷰로 표현하기
 ```Swift
 
