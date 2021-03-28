@@ -217,8 +217,176 @@ struct Movie: Codable {
     }
 }
 ```
+## 검색 API 복습(직접 코드 작성해보기)
+```Swift
+class SearchAPI {
+    static func search(_ term: String, completion: @escaping ([Movie]) -> Void) {
+        let session = URLSession(configuration: .default)
+
+        var urlComponents = URLComponents(string: "https://itunes.apple.com/search?")!
+        let mediaQuery = URLQueryItem(name: "media", value: "movie")
+        let entityQuery = URLQueryItem(name: "entity", value: "movie")
+        let termQuery = URLQueryItem(name: "term", value: term)
+        urlComponents.queryItems?.append(mediaQuery)
+        urlComponents.queryItems?.append(entityQuery)
+        urlComponents.queryItems?.append(termQuery)
+
+        let requestURL = urlComponents.url!
+
+        let dataTask = session.dataTask(with: requestURL) { data, response, error in
+            let successRange = 200..<300
+
+            guard error == nil,
+                  let statusCode = (response as? HTTPURLResponse)?.statusCode,
+                  successRange.contains(statusCode) else {
+                completion([])
+                return
+            }
+
+            guard let resultData = data else {
+                completion([])
+                return
+            }
+
+            let movies = SearchAPI.parseMovies(resultData)
+            completion(movies)
+            print("--> result: \(movies.count)")
+            
+        }
+        dataTask.resume()
+    }
+    
+    static func parseMovies(_ data: Data) -> [Movie] {
+        let decoder = JSONDecoder()
+
+        do {
+            let response = try decoder.decode(Response.self, from: data)
+            let movies = response.movies
+            return movies
+        } catch let error {
+            print("--> 파싱에 에러가 발생했습니다. 에러코드: \(error.localizedDescription)")
+            return []
+        }
+    }
+}
+
+struct Response: Codable {
+    let resultCount: Int
+    let movies: [Movie]
+
+    enum CodingKeys: String, CodingKey {
+        case resultCount
+        case movies = "results"
+    }
+}
+
+struct Movie: Codable {
+    let title: String
+    let director: String
+    let thumnailPath: String
+    let previewURL: String
+
+    enum CodingKeys: String, CodingKey {
+        case title = "trackName"
+        case director = "artistName"
+        case thumnailPath = "artworkUrl1100"
+        case previewURL = "previeUrl"
+    }
+}
+```
+
+
 
 ## 검색하여 내려온 정보를 컬렌션뷰로 표현하기
+```Swift
+class SearchViewController: UIViewController {
+    
+    @IBOutlet weak var searchBar: UISearchBar!
+    @IBOutlet weak var resultCollectionView: UICollectionView!
+    
+    // MVVM 모델에서는 뷰컨트롤러가 가지고 있으면 안되지만 이해를 돕기 위하여 여기에 작성한다.
+    var movies: [Movie] = []
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+    }
+}
+
+extension SearchViewController: UICollectionViewDataSource {
+    // 데이터소스에서는 필수로 2가지를 구현해줘야한다.
+    // 1. 몇개가 넘어오나?
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return movies.count
+    }
+    
+    // 2. 어떻게 표현할 것인가?
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ResultCell", for: indexPath) as?
+            ResultCell else {
+            return UICollectionViewCell()
+        }
+        cell.backgroundColor = .red
+        return cell
+    }
+}
+
+extension SearchViewController: UICollectionViewDelegate {
+    
+}
+
+extension SearchViewController: UICollectionViewDelegateFlowLayout { // 셀 사이즈 조절을 위함
+    // 셀의 사이즈 비율은 7:10이며, 양 옆의 마진은 8이고, 셀간격은 10이다.
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        let margin: CGFloat = 8
+        let itemSpacing: CGFloat = 10
+        let width = (collectionView.bounds.width - margin * 2 - itemSpacing * 2)/3
+        let height = width * 10/7
+        return CGSize(width: width, height: height)
+    }
+}
+
+class ResultCell: UICollectionViewCell {
+    @IBOutlet weak var movieThumnail: UIImageView!
+}
+
+extension SearchViewController: UISearchBarDelegate {
+    // 키보드가 올라와 있을 때, 내려가게하기 함수
+    private func dismissKeyboard() {
+        searchBar.resignFirstResponder()
+    }
+    
+    // 검색 화면에서 검색 버튼을 눌렀을 때 아래 코드 실행
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        
+        // 키보드가 올라와 있을 때, 내려가게하기 실행코드
+        dismissKeyboard()
+        
+        // 검색어가 있는지
+        guard let searchTerm = searchBar.text, searchTerm.isEmpty == false else { return }
+        
+        // 네트워킹을 통한 검색
+        // - 최종 목표 : 서치텀을 가지고 네트워킹을 통해서 영화 검색
+        // - 검색API가 필요
+        // - 결과를 받아올 모델 Movie, Response
+        // - 결과를 받아와서, CollectionView로 표현해주기
+        
+        // - 결과를 받아와서, CollectionView로 표현해주기 -> 만들기
+        SearchAPI.search(searchTerm) { movies in
+            // CollectionView 표현
+            print("--> 몇개가 넘어왔나? \(movies.count), 첫번째 무비 제목: \(movies.first?.title)")
+            DispatchQueue.main.async {
+                self.movies = movies
+                self.resultCollectionView.reloadData()
+            }
+        }
+        
+        print("---> 검색어는 \(searchTerm)")
+    }
+}
+```
+
+## 외부 코드 가져다 쓰는 방법
 ```Swift
 
 ```
