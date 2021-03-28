@@ -51,7 +51,7 @@ DispatchQueue.main.async {
 2. Global Queue
 - 큐에 들어가는 태스크의 우선순위를 QoS클래스를 통해서 표현할 수 있다.
 - QoS (Quality of Service)
-- QoS는 4개릐 클래스로 표현할 수 있다. (번호 순서대로 우선순위가 높다)
+- QoS는 4개의 클래스로 표현할 수 있다. (번호 순서대로 우선순위가 높다)
 1. userInteravtive - 바로 수행되어야할 작업
 2. userInitiated - 사용자가 결과를 기다리는 작업
 3. default - 2번보다 조금 덜 중요한 작업
