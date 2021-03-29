@@ -388,5 +388,14 @@ extension SearchViewController: UISearchBarDelegate {
 
 ## 외부 코드 가져다 쓰는 방법
 ```Swift
-
+import Kingfisher
+        // imagePath(String) -> image
+        // cell.movieThumnail.image = movie.thumnailPath 오류 발생
+        // 외부 코드 가져다 쓰기
+        // SPM(스위프트 패키지 매니저), Cocoa Pod, carthage
+        // 이번엔 SPM을 사용하여 킹피셔를 가져와본다.
+        // 방법
+        // Swift - File - Swift Pakage - Add Package Dependency... -  깃허브 주소 입력 - 가져온 뒤 임포트 입력
+        let  url = URL(string: movie.thumnailPath)!
+        cell.movieThumnail.kf.setImage(with: url)
 ```
