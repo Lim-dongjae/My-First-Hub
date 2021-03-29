@@ -399,3 +399,156 @@ import Kingfisher
         let  url = URL(string: movie.thumnailPath)!
         cell.movieThumnail.kf.setImage(with: url)
 ```
+
+## 동영상 재생 시 가로모드로 바꿔주기
+```Swift
+class PlayerViewController: UIViewController {
+
+    // 영상 재생 시 뷰 가로모드 해주기
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return .landscapeRight
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+    }
+    
+
+    @IBAction func closeButtonTapped(_ sender: Any) {
+        dismiss(animated: false, completion: nil)
+    }
+}
+```
+
+## 검색 후 클릭 시 플레이어 올려주기
+```Swift
+// 1. 플레이어 만들기
+//
+//  PlayerViewController.swift
+//  MyNetflix
+//
+//  Created by joonwon lee on 2020/04/01.
+//  Copyright © 2020 com.joonwon. All rights reserved.
+//
+
+import UIKit
+import AVFoundation
+
+class PlayerViewController: UIViewController {
+
+    @IBOutlet weak var playerView: PlayerView!
+    @IBOutlet weak var controlView: UIView!
+    @IBOutlet weak var playButton: UIButton!
+    
+    let player = AVPlayer()
+    
+    // 영상 재생 시 뷰 가로모드 해주기
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return .landscapeRight
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        playerView.player = player
+    }
+    
+    // 들어가자마자 영상 재생 시키기
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        play()
+    }
+    
+    @IBAction func togglePlaybutton(_ sender: Any) {
+        if player.isPlaying {
+            pause()
+        } else {
+            play()
+        }
+    }
+    
+    func pause() {
+        player.pause()
+        playButton.isSelected = true
+    }
+    
+    func play() {
+        player.play()
+        playButton.isSelected = false
+    }
+    
+    func reset() {
+        pause()
+        player.replaceCurrentItem(with: nil)
+    }
+    
+    @IBAction func closeButtonTapped(_ sender: Any) {
+        reset()
+        dismiss(animated: false, completion: nil)
+    }
+}
+
+extension AVPlayer {
+    var isPlaying: Bool {
+        guard self.currentItem != nil else { return false }
+        return self.rate != 0
+    }
+}
+
+
+// 2. 플레이어 띄워주기
+extension SearchViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        // movie
+        // player vc
+        // player vc + movie
+        // presenting player vc
+        
+        let movie = movies[indexPath.item]
+        let url = URL(string: movie.previewURL)!
+        let item = AVPlayerItem(url: url)
+        
+        let sb = UIStoryboard(name: "Player", bundle: nil)
+        let vc = sb.instantiateViewController(identifier: "PlayerViewController") as! PlayerViewController
+        vc.modalPresentationStyle = .fullScreen
+        
+        vc.player.replaceCurrentItem(with: item)
+        present(vc, animated: false, completion: nil)
+    }
+}
+```
+
+## 오늘의 영화 구현
+#### URL을 모르기 때문에 검색 API로 가져와서 표현한다.
+```Swift
+@IBAction func playButtonTapped(_ sender: Any) {
+        // 인터스텔라에 대한 정보를 검색API로 가져온다
+        // 거기서 인터스텔라 객체 하나를 가져온다
+        // 그 객체를 이용해서 PlayerViewController를 띄운다.
+        SearchAPI.search("interstella") { movies in
+        // SerchAPI에서 서치를하는데 인터스텔라를 검색하면 무비즈가 내려온다.
+            guard let interstella = movies.first else { return }
+            // 인터스텔라는 무비즈중에 첫번째 객체를 가져오고 없으면 리턴한다.
+            DispatchQueue.main.async {
+            // 네트워크 쓰레드에서 UIAPI를 호출하기 위해서 DispatchQueue를 사용한다.
+                let url = URL(string: interstella.previewURL)!
+                // URL을 가져오는데 인터스텔라의 프리뷰 URL을 가져온다.
+                let item = AVPlayerItem(url: url)
+                // 위에 url을 가지고 AVPlayer을 만든다.
+                
+                let sb = UIStoryboard(name: "Player", bundle: nil)
+                // 스토리보드에서 플레이어 스토리보드를 가져가고
+                let vc = sb.instantiateViewController(identifier: "PlayerViewController") as! PlayerViewController
+                // 플레이어뷰 컨트롤러를 만든다
+                vc.modalPresentationStyle = .fullScreen
+                // 풀스크린으로 보여주고
+                vc.player.replaceCurrentItem(with: item)
+                // 플레이어에 아이템을 전당한다.
+                self.present(vc, animated: false, completion: nil)
+                // 뷰컨트롤러를 프레젠트한다.
+            }
+        }
+    }
+```
+
+## 어느순간 플레이어가 재생되징 않는다...
+## 처음부터 다시 해보자
