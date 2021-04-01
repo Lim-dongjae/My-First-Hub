@@ -157,5 +157,125 @@ struct Book {
 
 ## 데이터 파싱하기
 ```Swift
+// MARK: Read(Fatch) Data
+extension ViewController {
+    func fetchCustomers() {
+        db.child("customers").observeSingleEvent(of: .value) { snapshot in
+            print("--> \(snapshot.value)")
+            
+            do {
+                let data = try JSONSerialization.data(withJSONObject: snapshot.value, options: [])
+                let decoder = JSONDecoder()
+                let customers: [Customer] = try decoder.decode([Customer].self, from: data)
+                DispatchQueue.main.async {
+                    self.numOfCustomers.text = "# of Customers: \(customers.count)"
+                }
+            } catch let error {
+                print("---> error: \(error.localizedDescription)")
+            }
+        }
+    }
+}
+```
 
+## 데이터 수정 및 삭제
+```Swift
+// 수행하는 코드
+override func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view.
+        updateLabel()
+//        saveBasicTypes()
+//        saveCostomers()
+        fetchCustomers()
+        
+        // update, delete 둘 중 하나만 써야한다 (업데이트되고 삭제되면 안되니까)
+        updateBasicTypes()
+//        deleteBasicTypes()
+    }
+
+// 업데이트, 딜리트 코드
+extension ViewController {
+    func updateBasicTypes() {
+        db.updateChildValues(["int" : 6])
+        db.updateChildValues(["double" : 6.1])
+        db.updateChildValues(["str" : "업데이트 실험"])
+        
+    }
+    
+    func deleteBasicTypes() {
+        db.child("int").removeValue()
+        db.child("double").removeValue()
+        db.child("str").removeValue()
+    }
+}
+```
+
+## 데이터 업데이트를 버튼에 연결하여 사용해보기
+```Swift
+// 기본코드
+class ViewController: UIViewController {
+    
+    @IBOutlet weak var dataLabel: UILabel!
+    @IBOutlet weak var numOfCustomers: UILabel!
+    let db = Database.database().reference()
+    var customers: [Customer] = [] // 추가된 코드
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view.
+        updateLabel()
+        fetchCustomers()
+    }
+
+// 버튼 연결
+@IBAction func createCustomer(_ sender: Any) {
+        saveCostomers()
+    }
+    
+    @IBAction func fetchCustomer(_ sender: Any) {
+        fetchCustomers()
+    }
+    
+    func updateCustomer() {
+        guard customers.isEmpty == false else { return }
+        customers[0].name = "Min"
+        
+        let dictionary = customers.map { $0.toDictionary }
+        db.updateChildValues(["customers" : dictionary])
+    }
+    
+    @IBAction func updateCustomer(_ sender: Any) {
+        updateCustomer()
+    }
+    
+    func deleteCustomer() {
+        db.child("customers").removeValue()
+    }
+    
+    @IBAction func deleteCustomer(_ sender: Any) {
+        deleteCustomer()
+    }
+}
+
+// fetch
+extension ViewController {
+    func fetchCustomers() {
+        db.child("customers").observeSingleEvent(of: .value) { snapshot in
+            print("--> \(snapshot.value)")
+            
+            do {
+                let data = try JSONSerialization.data(withJSONObject: snapshot.value, options: [])
+                let decoder = JSONDecoder()
+                let customers: [Customer] = try decoder.decode([Customer].self, from: data)
+                self.customers = customers // 추가된 코드
+                DispatchQueue.main.async {
+                    self.numOfCustomers.text = "# of Customers: \(customers.count)"
+                }
+            } catch let error {
+                print("---> error: \(error.localizedDescription)")
+            }
+        }
+    }
+}
 ```
