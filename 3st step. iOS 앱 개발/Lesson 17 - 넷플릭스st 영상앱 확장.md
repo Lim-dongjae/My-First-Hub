@@ -31,3 +31,20 @@
 
 ### 만드는 방법
 #### 스크롤 뷰 생성 - 컨텐츠 뷰 생성 - 스택 뷰 생성 - 컨테이너 뷰 생성
+
+### 네스티드 스크롤뷰에 들어갈 컨텐츠
+```Swift
+override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "award" {
+            let destinationVC = segue.destination as? RecommendListViewController
+            awardRecommendListViewController = destinationVC
+            awardRecommendListViewController.viewModel.updateType(.award)
+            awardRecommendListViewController.viewModel.fetchItems()
+        } else if segue.identifier == "hot" {
+            let destinationVC = segue.destination as? RecommendListViewController
+            hotRecommendListViewController = destinationVC
+            hotRecommendListViewController.viewModel.updateType(.hot)
+            hotRecommendListViewController.viewModel.fetchItems()
+        }
+    }
+```
