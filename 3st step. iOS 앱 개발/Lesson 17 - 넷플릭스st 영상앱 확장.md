@@ -48,3 +48,52 @@ override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         }
     }
 ```
+
+## 파일베이스 연결 및 검색어 저장
+```Swift
+class SearchViewController: UIViewController {
+    
+    let db = Database.database().reference().child("searchHistory")   //---> 추가된 코드
+    
+    @IBOutlet weak var searchBar: UISearchBar!
+    @IBOutlet weak var resultCollectionView: UICollectionView!
+    
+    var movies: [Movie] = []
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+    }
+}
+
+func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        
+        // 키보드가 올라와 있을때, 내려가게 처리
+        dismissKeyboard()
+        // 검색어가 있는지
+        guard let searchTerm = searchBar.text, searchTerm.isEmpty == false else { return }
+        
+        // 네트워킹을 통한 검색
+        // - 목표: 서치텀을 가지고 네트워킹을 통해서 영화 검색
+        // - [x] 검색API 가 필요
+        // - [x] 결과를 받아올 모델 Movie, Respone
+        // - [x] 결과를 받아와서, CollectionView로 표현해주자
+        
+        SearchAPI.search(searchTerm) { movies in
+            // - [x] collectionView로 표현하기
+            print("--> 몇개 넘어왔어?? \(movies.count), 첫번째꺼 제목: \(movies.first?.title)")
+            DispatchQueue.main.async {
+                self.movies = movies
+                self.resultCollectionView.reloadData()
+                let timestamp: Double = Date().timeIntervalSince1970.rounded()  //---> 추가된 코드
+                self.db.childByAutoId().setValue(["term": searchTerm, "timestamp": timestamp])   //---> 추가된 코드
+            }
+        }
+        
+        print("--> 검색어: \(searchTerm)")
+    }
+```
+
+## 검색어 서버에서 가져오기
+```Swift
+
+```
