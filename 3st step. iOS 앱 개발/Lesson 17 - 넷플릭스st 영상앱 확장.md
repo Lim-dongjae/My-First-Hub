@@ -95,5 +95,73 @@ func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
 
 ## 검색어 서버에서 가져오기
 ```Swift
+import UIKit
+import Firebase
+class HistoryViewController: UIViewController {
 
+    @IBOutlet weak var tableView: UITableView!
+    
+    let db = Database.database().reference().child("searchHistory")
+    var searchTerms: [SearchTerm] = []
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        db.observeSingleEvent(of: .value) { (snapshot) in
+            
+            guard let searchHistory = snapshot.value as? [String: Any] else { return }
+            
+            let data = try! JSONSerialization.data(withJSONObject: Array(searchHistory.values), options: [])
+            
+            let decoder = JSONDecoder()
+            let searchTerms = try! decoder.decode([SearchTerm].self, from: data)
+            self.searchTerms = searchTerms
+            self.tableView.reloadData()
+            print("---> snapshot: \(data), \(searchTerms)")
+        }
+    }
+}
+
+extension HistoryViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return searchTerms.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "HistoryCell", for: indexPath) as? HistoryCell
+        else {
+            return UITableViewCell()
+        }
+        cell.searchTerm.text = searchTerms[indexPath.row].term
+        return cell
+    }
+}
+
+class HistoryCell: UITableViewCell {
+    @IBOutlet weak var searchTerm: UILabel!
+}
+
+struct SearchTerm: Codable {
+    let term: String
+    let timestamp: TimeInterval
+}
+```
+
+## 표시되는 검색어히스토리를 정렬하기(검색한 시간에 따라)
+```Swift
+// 기존 검색어 표시 방법 (무작위)
+self.searchTerms = searchTerms
+
+// 검색을 한 순서대로 정렬
+self.searchTerms = searchTerms.sorted(by: { (term1, term2) in
+                return term1.timestamp > term2.timestamp
+            })
+// term1을 검색한 시간은 term2를 검색한 시간보다 빠르다.
+
+// 위 코드는 아래처럼 줄여서 사용할 수 있지만 별로 선호되지 않는다.
+self.searchTerms = searchTerms.sorted { $0.timestamp > $1.timestamp }
 ```
