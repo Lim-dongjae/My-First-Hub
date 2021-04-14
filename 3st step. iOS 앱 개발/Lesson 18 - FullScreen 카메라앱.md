@@ -44,5 +44,40 @@ pod 'Kingfisher', '~> 5.0' <- 추가
 ## 커스텀 카메라 - Media Capture
 ### 미디어 캡쳐링에서 알아야하는 구조 및 주요 구성요소
 #### 1. AVCaptureSession
+#### - 카메라, 마이크 인풋에서 들어오는 비디오, 오디오 데이터를 아웃풋에 연결시켜주는 중간 역할
+
 #### 2. AVCaptureDeviceInput
+#### - 미디어 소스를 제공해주는 카메라, 마이크
+
 #### 3. AVCAptureOutput
+#### - 인풋에서 들어오는 데이터를 사용하는 과정
+
+```Swift
+class PreviewView: UIView {
+    var videoPreviewLayer: AVCaptureVideoPreviewLayer {
+        guard let layer = layer as? AVCaptureVideoPreviewLayer else {
+            fatalError("Expected `AVCaptureVideoPreviewLayer` type for layer. Check PreviewView.layerClass implementation.")
+        }
+        
+        layer.videoGravity = AVLayerVideoGravity.resizeAspectFill
+        layer.connection?.videoOrientation = .portrait
+        return layer
+    }
+    
+    var session: AVCaptureSession? {
+        get {
+            return videoPreviewLayer.session
+        }
+        set {
+            videoPreviewLayer.session = newValue
+        }
+    }
+    
+    // MARK: UIView
+    
+    override class var layerClass: AnyClass {
+        return AVCaptureVideoPreviewLayer.self
+    }
+}
+
+```
